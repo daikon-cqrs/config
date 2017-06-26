@@ -1,11 +1,11 @@
 <?php
 
-namespace Accordia\Test\PhpConfig;
+namespace Daikon\Test\Config;
 
-use Accordia\PhpConfig\ConfigProvider;
-use Accordia\PhpConfig\ConfigProviderInterface;
-use Accordia\PhpConfig\ConfigProviderParams;
-use Accordia\PhpConfig\YamlConfigLoader;
+use Daikon\Config\ConfigProvider;
+use Daikon\Config\ConfigProviderInterface;
+use Daikon\Config\ConfigProviderParams;
+use Daikon\Config\YamlConfigLoader;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase

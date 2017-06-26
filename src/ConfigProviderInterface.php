@@ -1,6 +1,6 @@
 <?php
 
-namespace Accordia\PhpConfig;
+namespace Daikon\Config;
 
 interface ConfigProviderInterface
 {

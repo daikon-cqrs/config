@@ -1,6 +1,6 @@
 <?php
 
-namespace Accordia\PhpConfig;
+namespace Daikon\Config;
 
 interface ConfigLoaderInterface
 {
@@ -10,4 +10,16 @@ interface ConfigLoaderInterface
      * @return mixed[]
      */
     public function load(array $lookup_paths, array $lookup_patterns): array;
+
+    /**
+     * @param mixed[] $config
+     * @return string
+     */
+    public function serialize(array $config): string;
+
+    /**
+     * @param string $serializedConfig
+     * @return mixed[]
+     */
+    public function deserialize(string $serializedConfig): array;
 }

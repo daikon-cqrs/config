@@ -1,6 +1,6 @@
 <?php
 
-namespace Accordia\PhpConfig;
+namespace Daikon\Config;
 
 final class ConfigProvider implements ConfigProviderInterface
 {
@@ -37,14 +37,14 @@ final class ConfigProvider implements ConfigProviderInterface
     public function get(string $path, $default = null)
     {
         $configPath = $this->buildPath($path);
-        $loadedConfig = $this->retrieveScope($configPath);
+        $scopeConfig = $this->retrieveScope($configPath);
         if ($configPath->hasWildcardNamespace()) {
-            return $loadedConfig;
+            return $scopeConfig;
         }
-        if (isset($loadedConfig[$configPath->getNamespace()]) && $configPath->hasWildcardKey()) {
-            return $loadedConfig[$configPath->getNamespace()];
+        if (isset($scopeConfig[$configPath->getNamespace()]) && $configPath->hasWildcardKey()) {
+            return $scopeConfig[$configPath->getNamespace()];
         }
-        return $this->findNamespaceValue($loadedConfig[$configPath->getNamespace()], $configPath) ?? $default;
+        return $this->findNamespaceValue($scopeConfig[$configPath->getNamespace()], $configPath) ?? $default;
     }
 
     /**
@@ -53,7 +53,11 @@ final class ConfigProvider implements ConfigProviderInterface
      */
     public function has(string $path): bool
     {
-        $configPath = $this->buildPath($path);
+        try {
+            return $this->get($path) !== null;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

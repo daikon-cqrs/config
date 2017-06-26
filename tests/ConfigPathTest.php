@@ -1,8 +1,8 @@
 <?php
 
-namespace Accordia\Test\PhpConfig;
+namespace Daikon\Test\Config;
 
-use Accordia\PhpConfig\ConfigPath;
+use Daikon\Config\ConfigPath;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigPathTest extends TestCase

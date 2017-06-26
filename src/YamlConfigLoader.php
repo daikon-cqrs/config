@@ -1,6 +1,6 @@
 <?php
 
-namespace Accordia\PhpConfig;
+namespace Daikon\Config;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -46,5 +46,25 @@ final class YamlConfigLoader implements ConfigLoaderInterface
             $loadedNamespaces[$namespace] = $namespaceConfig;
         }
         return $loadedNamespaces;
+    }
+
+    /**
+     * @param mixed[] $config
+     * @return string
+     */
+    public function serialize(array $config): string
+    {
+        // not implemented yet
+        return '';
+    }
+
+    /**
+     * @param string $serializedConfig
+     * @return mixed[]
+     */
+    public function deserialize(string $serializedConfig): array
+    {
+        // not implemented yet
+        return [];
     }
 }
