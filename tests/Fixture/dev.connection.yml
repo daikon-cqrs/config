@@ -1,0 +1,7 @@
+---
+event_source:
+  class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleDebugConnector
+  settings:
+    auth:
+      username: foo
+      password: bar
