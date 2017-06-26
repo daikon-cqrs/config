@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "747643d23c4be8ebd599a62a935b23b8",
-    "content-hash": "9311b36a9b288b9f1f77b0f829d0ad70",
+    "hash": "f23b6f558a620503deff91303c835f9f",
+    "content-hash": "07f2d7a9055d4c2f01c6d3c0b29e0342",
     "packages": [
         {
             "name": "shrink0r/php-schema",

@@ -1,9 +1,9 @@
 {
-    "name": "accordia/php-config",
+    "name": "accordia/config",
     "type": "library",
-    "description": "Config loader and provider for php.",
+    "description": "Config loader and provider.",
     "keywords": [ "config" ],
-    "homepage": "https://github.com/accordia/php-config",
+    "homepage": "https://github.com/accordia/config",
     "license": "MPL-2.0",
     "prefer-stable": true,
     "require": {
