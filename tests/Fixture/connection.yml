@@ -3,10 +3,10 @@ event_source:
   class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleConnector
   settings:
     auth:
-      username: ${config::couchdb::user}
-      password: ${config::couchdb::password}
-    host: ${config::couchdb::host}
-    port: ${config::couchdb::port}
-    transport: ${config::couchdb::transport}
+      username: ${settings::couchdb::user}
+      password: ${settings::couchdb::password}
+    host: ${settings::couchdb::host}
+    port: ${settings::couchdb::port}
+    transport: ${settings::couchdb::transport}
     database: hlx-security
     status_test: /

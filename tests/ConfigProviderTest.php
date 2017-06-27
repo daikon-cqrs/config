@@ -10,8 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
 {
-    const CONFIG_FIXTURE = [
-        "config" => [
+    const PRELOADED_CONFIG = [
+        "settings" => [
             "couchdb" => [
                 "host" => "127.0.0.1",
                 "port" => 5984,
@@ -25,14 +25,14 @@ final class ConfigProviderTest extends TestCase
     public function testGetInitialConfigValue()
     {
         $configProvider = new ConfigProvider(
-            new ConfigProviderParams("config", "global"),
-            self::CONFIG_FIXTURE
+            self::PRELOADED_CONFIG,
+            new ConfigProviderParams([], "settings::global")
         );
 
         $this->assertInstanceOf(ConfigProviderInterface::class, $configProvider);
         $this->assertEquals("127.0.0.1", $configProvider->get("couchdb::host"));
-        $this->assertEquals("couchdb", $configProvider->get("config::couchdb::user"));
-        $this->assertEquals(self::CONFIG_FIXTURE["config"]["couchdb"], $configProvider->get("couchdb::*"));
+        $this->assertEquals("couchdb", $configProvider->get("settings::couchdb::user"));
+        $this->assertEquals(self::PRELOADED_CONFIG["settings"]["couchdb"], $configProvider->get("couchdb::*"));
     }
 
     /**
@@ -41,8 +41,8 @@ final class ConfigProviderTest extends TestCase
     public function testGetLoadedConfigValue(array $paramsFixture)
     {
         $configProvider = new ConfigProvider(
-            new ConfigProviderParams("config", "couchdb", $paramsFixture),
-            self::CONFIG_FIXTURE
+            self::PRELOADED_CONFIG,
+            new ConfigProviderParams($paramsFixture, "settings::couchdb")
         );
 
         $expected = require __DIR__."/Fixture/expectation_1.php";
@@ -63,8 +63,8 @@ final class ConfigProviderTest extends TestCase
     {
         $paramsFixture["connections"]["lookup_patterns"][] = "dev.connection.yml";
         $configProvider = new ConfigProvider(
-            new ConfigProviderParams("config", "couchdb", $paramsFixture),
-            self::CONFIG_FIXTURE
+            self::PRELOADED_CONFIG,
+            new ConfigProviderParams($paramsFixture, "settings::couchdb")
         );
 
         $expected = require __DIR__."/Fixture/expectation_2.php";

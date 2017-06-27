@@ -23,10 +23,10 @@ final class ConfigProvider implements ConfigProviderInterface
      * @param ConfigProviderParamsInterface $configParams
      * @param mixed[] $prePopulatedConfig
      */
-    public function __construct(ConfigProviderParamsInterface $configParams, array $prePopulatedConfig = [])
+    public function __construct(array $prePopulatedConfig, ConfigProviderParamsInterface $configParams)
     {
-        $this->configParams = $configParams;
         $this->config = $prePopulatedConfig;
+        $this->configParams = $configParams;
     }
 
     /**

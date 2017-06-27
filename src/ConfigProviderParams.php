@@ -20,18 +20,20 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
     private $defaultNamespace;
 
     /**
-     * @param string $defaultScope
-     * @param string $defaultNamespace
+     * @param string $defaultScopeAndNamespace
      * @param mixed[] $params
      */
-    public function __construct(string $defaultScope, string $defaultNamespace, array $params = [])
+    public function __construct(array $params, string $defaultScopeAndNamespace)
     {
         foreach ($params as $scope => $scopeParams) {
             $this->verifyScopeParams($scope, $scopeParams);
         }
         $this->params = $params;
-        $this->defaultScope = $defaultScope;
-        $this->defaultNamespace = $defaultNamespace;
+        $scopeParts = explode("::", $defaultScopeAndNamespace);
+        if (count($scopeParts) !== 2) {
+            throw new \Exception("Invalid defaultScopeAndNamespace given.");
+        }
+        list($this->defaultScope, $this->defaultNamespace) = $scopeParts;
     }
 
     /**
