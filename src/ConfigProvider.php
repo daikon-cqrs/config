@@ -72,8 +72,8 @@ final class ConfigProvider implements ConfigProviderInterface
         }
         $this->config[$scope] = $this->interpolateConfigValues(
             $this->configParams->getLoader($path)->load(
-                $this->configParams->getNamespaces($path),
-                $this->configParams->getLookupPatterns($path)
+                $this->configParams->getLocations($path),
+                $this->configParams->getSources($path)
             )
         );
         return $this->config[$scope];

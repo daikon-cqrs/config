@@ -1,7 +1,8 @@
 ---
-event_source:
-  class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleDebugConnector
-  settings:
-    auth:
-      username: foo
-      password: bar
+hlx.security:
+  event_source:
+    class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleDebugConnector
+    settings:
+      auth:
+        username: foo
+        password: bar

@@ -26,7 +26,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
     public function __construct(array $params, string $defaultScopeAndNamespace)
     {
         foreach ($params as $scope => $scopeParams) {
-            $this->verifyScopeParams($scope, $scopeParams);
+            $this->verifyParams($scope, $scopeParams);
         }
         $this->params = $params;
         $scopeParts = explode("::", $defaultScopeAndNamespace);
@@ -69,79 +69,48 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
 
     /**
      * @param ConfigPathInterface $configPath
-     * @return mixed[]
+     * @return string[]
      */
-    public function getNamespaces(ConfigPathInterface $configPath): array
+    public function getLocations(ConfigPathInterface $configPath): array
     {
         $scope = $configPath->getScope();
         $this->assertScopeExists($configPath);
-        return $this->params[$scope]["namespaces"];
-    }
-
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return mixed[]
-     */
-    public function getNamespace(ConfigPathInterface $configPath): array
-    {
-        $scope = $configPath->getScope();
-        $namespace = $configPath->getNamespace();
-        $this->assertScopeExists($configPath);
-        if (!isset($this->params[$scope][$namespace])) {
-            throw new \Exception(
-                "$configPath: Given namespace: '$namespace', is unknown within scope: '$scope'"
-            );
-        }
-        return $this->params[$scope][$namespace];
+        return $this->params[$scope]["locations"];
     }
 
     /**
      * @param ConfigPathInterface $configPath
      * @return string[]
      */
-    public function getLookupPatterns(ConfigPathInterface $configPath): array
+    public function getSources(ConfigPathInterface $configPath): array
     {
         $scope = $configPath->getScope();
         $this->assertScopeExists($configPath);
-        return $this->params[$scope]["lookup_patterns"];
+        return $this->params[$scope]["sources"];
     }
 
     /**
      * @param string $scope
      * @param mixed[] $scopeParams
      */
-    private function verifyScopeParams(string $scope, array $scopeParams)
+    private function verifyParams(string $scope, array $scopeParams)
     {
-        $this->verifyScopeNamespaces($scope, $scopeParams);
-        $this->verifyScopeLookupPatterns($scope, $scopeParams);
-        $this->verifyScopeLoader($scope, $scopeParams);
+        $this->verifyLocations($scope, $scopeParams);
+        $this->verifySources($scope, $scopeParams);
+        $this->verifyLoader($scope, $scopeParams);
     }
 
     /**
      * @param string $scope
      * @param mixed[] $scopeParams
      */
-    private function verifyScopeNamespaces(string $scope, array $scopeParams)
+    private function verifyLocations(string $scope, array $scopeParams)
     {
-        if (!isset($scopeParams['namespaces'])) {
-            throw new \Exception("Missing required key 'namespaces' within scope: '$scope'");
+        if (!isset($scopeParams['locations'])) {
+            throw new \Exception("Missing required key 'locations' within scope: '$scope'");
         }
-        if (!is_array($scopeParams['namespaces'])) {
-            throw new \Exception("The 'namespaces' param within scope: '$scope' must be an array");
-        }
-        foreach ($scopeParams['namespaces'] as $namespace => $namespaceParams) {
-            if (is_numeric($namespace)) {
-                throw new \Exception(
-                    "Namespace identifiers may not be numeric, ".
-                    "but given namespace: '$namespace' within scope: '$scope' is numeric."
-                );
-            }
-            if (!is_array($namespaceParams)) {
-                throw new \Exception(
-                    "Namespace locations must be specified within an array. ".
-                    "Non-array value for namespace: '$namespace' given within scope: '$scope'"
-                );
-            }
+        if (!is_array($scopeParams['locations'])) {
+            throw new \Exception("The 'locations' param within scope: '$scope' must be an array");
         }
     }
 
@@ -149,13 +118,13 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
      * @param string $scope
      * @param mixed[] $scopeParams
      */
-    private function verifyScopeLookupPatterns(string $scope, array $scopeParams)
+    private function verifySources(string $scope, array $scopeParams)
     {
-        if (!isset($scopeParams['lookup_patterns'])) {
-            throw new \Exception("Missing required key 'lookup_patterns' within scope: '$scope'");
+        if (!isset($scopeParams['sources'])) {
+            throw new \Exception("Missing required key 'sources' within scope: '$scope'");
         }
-        if (!is_array($scopeParams['lookup_patterns'])) {
-            throw new \Exception("The 'lookup_patterns' param within scope: '$scope' must be an array");
+        if (!is_array($scopeParams['sources'])) {
+            throw new \Exception("The 'sources' param within scope: '$scope' must be an array");
         }
     }
 
@@ -163,7 +132,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
      * @param string $scope
      * @param mixed[] $scopeParams
      */
-    private function verifyScopeLoader(string $scope, array $scopeParams)
+    private function verifyLoader(string $scope, array $scopeParams)
     {
         if (!isset($scopeParams['loader'])) {
             throw new \Exception("Missing required key 'loader' within scope: '$scope'");

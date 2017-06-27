@@ -20,32 +20,28 @@ final class YamlConfigLoader implements ConfigLoaderInterface
     }
 
     /**
-     * @param mixed[] $lookup_paths
-     * @param string[] $lookup_patterns
+     * @param string[] $locations
+     * @param string[] $sources
      * @return mixed[]
      */
-    public function load(array $namespaces, array $lookup_patterns): array
+    public function load(array $locations, array $sources): array
     {
-        $loadedNamespaces = [];
-        foreach ($namespaces as $namespace => $lookup_paths) {
-            $namespaceConfig = [];
-            foreach ($lookup_paths as $lookup_path) {
-                foreach ($lookup_patterns as $lookup_pattern) {
-                    if (substr($lookup_path, -1) !== "/") {
-                        $lookup_path .= "/";
-                    }
-                    $filepath = $lookup_path.$lookup_pattern;
-                    if (is_readable($filepath)) {
-                        $namespaceConfig = array_replace_recursive(
-                            $namespaceConfig,
-                            $this->yamlParser::parse(file_get_contents($filepath))
-                        );
-                    }
+        $loadedConfigs = [];
+        foreach ($locations as $location) {
+            if (substr($location, -1) !== "/") {
+                $location .= "/";
+            }
+            foreach ($sources as $source) {
+                $filepath = $location.$source;
+                if (is_readable($filepath)) {
+                    $loadedConfigs = array_replace_recursive(
+                        $loadedConfigs,
+                        $this->yamlParser->parse(file_get_contents($filepath))
+                    );
                 }
             }
-            $loadedNamespaces[$namespace] = $namespaceConfig;
         }
-        return $loadedNamespaces;
+        return $loadedConfigs;
     }
 
     /**

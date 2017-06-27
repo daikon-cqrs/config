@@ -5,11 +5,11 @@ namespace Daikon\Config;
 interface ConfigLoaderInterface
 {
     /**
-     * @param mixed[] $lookup_paths
-     * @param string[] $lookup_patterns
+     * @param string[] $locations
+     * @param string[] $sources
      * @return mixed[]
      */
-    public function load(array $lookup_paths, array $lookup_patterns): array;
+    public function load(array $locations, array $sources): array;
 
     /**
      * @param mixed[] $config

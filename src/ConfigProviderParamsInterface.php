@@ -22,19 +22,14 @@ interface ConfigProviderParamsInterface
 
     /**
      * @param ConfigPathInterface $configPath
-     * @return mixed[]
+     * @return string[]
      */
-    public function getNamespaces(ConfigPathInterface $configPath): array;
-
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return mixed[]
-     */
-    public function getNamespace(ConfigPathInterface $configPath): array;
+    public function getLocations(ConfigPathInterface $configPath): array;
 
     /**
      * @param ConfigPathInterface $configPath
      * @return string[]
      */
-    public function getLookupPatterns(ConfigPathInterface $configPath): array;
+    public function getSources(ConfigPathInterface $configPath): array;
+
 }

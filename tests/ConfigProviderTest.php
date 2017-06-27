@@ -61,7 +61,7 @@ final class ConfigProviderTest extends TestCase
      */
     public function testGetLoadedCascadedConfigValue(array $paramsFixture)
     {
-        $paramsFixture["connections"]["lookup_patterns"][] = "dev.connection.yml";
+        $paramsFixture["connections"]["sources"][] = "dev.connection.yml";
         $configProvider = new ConfigProvider(
             self::PRELOADED_CONFIG,
             new ConfigProviderParams($paramsFixture, "settings::couchdb")
@@ -84,12 +84,10 @@ final class ConfigProviderTest extends TestCase
             "connections" => [
                 "loader" => YamlConfigLoader::class,
                 "schema" => __DIR__."/connection_schema.php", // not implemented yet
-                "namespaces" => [
-                    "hlx.security" => [
-                        __DIR__."/Fixture"
-                    ]
+                "locations" => [
+                    __DIR__."/Fixture"
                 ],
-                "lookup_patterns" => [
+                "sources" => [
                     "connection.yml"
                 ]
             ]
