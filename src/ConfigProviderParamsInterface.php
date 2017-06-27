@@ -31,5 +31,4 @@ interface ConfigProviderParamsInterface
      * @return string[]
      */
     public function getSources(ConfigPathInterface $configPath): array;
-
 }
