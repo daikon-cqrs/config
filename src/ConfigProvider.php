@@ -1,39 +1,28 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Config;
 
 final class ConfigProvider implements ConfigProviderInterface
 {
-    /**
-     * @var string
-     */
     private const INTERPOLATION_PATTERN = '/(\$\{(.*?)\})/';
 
-    /**
-     * @var mixed[]
-     */
     private $config;
 
-    /**
-     * @var ConfigProviderParamsInterface
-     */
     private $configParams;
 
-    /**
-     * @param ConfigProviderParamsInterface $configParams
-     * @param mixed[] $prePopulatedConfig
-     */
-    public function __construct(array $prePopulatedConfig, ConfigProviderParamsInterface $configParams)
+    public function __construct(ConfigProviderParamsInterface $configParams)
     {
-        $this->config = $prePopulatedConfig;
         $this->configParams = $configParams;
     }
 
-    /**
-     * @param string $path
-     * @param mixed $default
-     * @return mixed
-     */
     public function get(string $path, $default = null)
     {
         $configPath = $this->buildPath($path);
@@ -47,10 +36,6 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->findNamespaceValue($scopeConfig[$configPath->getNamespace()], $configPath) ?? $default;
     }
 
-    /**
-     * @param string $path
-     * @return bool
-     */
     public function has(string $path): bool
     {
         try {
@@ -60,10 +45,6 @@ final class ConfigProvider implements ConfigProviderInterface
         }
     }
 
-    /**
-     * @param ConfigPathInterface $path
-     * @return mixed
-     */
     private function retrieveScope(ConfigPathInterface $path): array
     {
         $scope = $path->getScope();
@@ -79,10 +60,6 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->config[$scope];
     }
 
-    /**
-     * @param string $path
-     * @return ConfigPathInterface
-     */
     private function buildPath(string $path): ConfigPathInterface
     {
         return ConfigPath::fromPathString(
@@ -92,11 +69,6 @@ final class ConfigProvider implements ConfigProviderInterface
         );
     }
 
-    /**
-     * @param mixed[] $namespace
-     * @param ConfigPathInterface $path
-     * @return mixed
-     */
     private function findNamespaceValue(array $namespace, ConfigPathInterface $path)
     {
         $value = &$namespace;
@@ -114,10 +86,6 @@ final class ConfigProvider implements ConfigProviderInterface
         return $value;
     }
 
-    /**
-     * @param mixed[] $config
-     * @return mixed[]
-     */
     private function interpolateConfigValues(array $config): array
     {
         foreach ($config as $key => $value) {

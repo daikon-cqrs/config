@@ -1,28 +1,23 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Config;
 
 final class ConfigProviderParams implements ConfigProviderParamsInterface
 {
-    /**
-     * @var mixed[]
-     */
     private $params;
 
-    /**
-     * @var string
-     */
     private $defaultScope;
 
-    /**
-     * @var string
-     */
     private $defaultNamespace;
 
-    /**
-     * @param string $defaultScopeAndNamespace
-     * @param mixed[] $params
-     */
     public function __construct(array $params, string $defaultScopeAndNamespace)
     {
         foreach ($params as $scope => $scopeParams) {
@@ -36,26 +31,16 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         list($this->defaultScope, $this->defaultNamespace) = $scopeParts;
     }
 
-    /**
-     * @return string
-     */
     public function getDefaultScope(): string
     {
         return $this->defaultScope;
     }
 
-    /**
-     * @return string
-     */
     public function getDefaultNamespace(): string
     {
         return $this->defaultNamespace;
     }
 
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return ConfigLoaderInterface
-     */
     public function getLoader(ConfigPathInterface $configPath): ConfigLoaderInterface
     {
         $scope = $configPath->getScope();
@@ -67,10 +52,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]["loader"];
     }
 
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return string[]
-     */
     public function getLocations(ConfigPathInterface $configPath): array
     {
         $scope = $configPath->getScope();
@@ -78,10 +59,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]["locations"];
     }
 
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return string[]
-     */
     public function getSources(ConfigPathInterface $configPath): array
     {
         $scope = $configPath->getScope();
@@ -89,10 +66,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]["sources"];
     }
 
-    /**
-     * @param string $scope
-     * @param mixed[] $scopeParams
-     */
     private function verifyParams(string $scope, array $scopeParams)
     {
         $this->verifyLocations($scope, $scopeParams);
@@ -100,10 +73,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         $this->verifyLoader($scope, $scopeParams);
     }
 
-    /**
-     * @param string $scope
-     * @param mixed[] $scopeParams
-     */
     private function verifyLocations(string $scope, array $scopeParams)
     {
         if (!isset($scopeParams['locations'])) {
@@ -114,10 +83,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         }
     }
 
-    /**
-     * @param string $scope
-     * @param mixed[] $scopeParams
-     */
     private function verifySources(string $scope, array $scopeParams)
     {
         if (!isset($scopeParams['sources'])) {
@@ -128,10 +93,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         }
     }
 
-    /**
-     * @param string $scope
-     * @param mixed[] $scopeParams
-     */
     private function verifyLoader(string $scope, array $scopeParams)
     {
         if (!isset($scopeParams['loader'])) {
@@ -154,9 +115,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         }
     }
 
-    /**
-     * @param ConfigPathInterface $configPath
-     */
     private function assertScopeExists(ConfigPathInterface $configPath)
     {
         $scope = $configPath->getScope();

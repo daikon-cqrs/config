@@ -1,34 +1,24 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Config;
 
 interface ConfigProviderParamsInterface
 {
-    /**
-     * @return string
-     */
     public function getDefaultScope(): string;
 
-    /**
-     * @return string
-     */
     public function getDefaultNamespace(): string;
 
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return ConfigLoaderInterface
-     */
     public function getLoader(ConfigPathInterface $configPath): ConfigLoaderInterface;
 
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return string[]
-     */
     public function getLocations(ConfigPathInterface $configPath): array;
 
-    /**
-     * @param ConfigPathInterface $configPath
-     * @return string[]
-     */
     public function getSources(ConfigPathInterface $configPath): array;
 }

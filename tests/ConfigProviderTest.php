@@ -1,7 +1,16 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Test\Config;
 
+use Daikon\Config\ArrayConfigLoader;
 use Daikon\Config\ConfigProvider;
 use Daikon\Config\ConfigProviderInterface;
 use Daikon\Config\ConfigProviderParams;
@@ -11,37 +20,36 @@ use PHPUnit\Framework\TestCase;
 final class ConfigProviderTest extends TestCase
 {
     const PRELOADED_CONFIG = [
-        "settings" => [
-            "couchdb" => [
-                "host" => "127.0.0.1",
-                "port" => 5984,
-                "transport" => "https",
-                "user" => "couchdb",
-                "password" => "couchdb"
-            ]
+        "couchdb" => [
+            "host" => "127.0.0.1",
+            "port" => 5984,
+            "transport" => "https",
+            "user" => "couchdb",
+            "password" => "couchdb"
         ]
     ];
 
-    public function testGetInitialConfigValue()
+    /**
+     * @dataProvider configParamsProvider
+     */
+    public function testGetArrayLoaderConfig(array $paramsFixture)
     {
         $configProvider = new ConfigProvider(
-            self::PRELOADED_CONFIG,
-            new ConfigProviderParams([], "settings::global")
+            new ConfigProviderParams($paramsFixture, "settings::couchdb")
         );
 
         $this->assertInstanceOf(ConfigProviderInterface::class, $configProvider);
         $this->assertEquals("127.0.0.1", $configProvider->get("couchdb::host"));
         $this->assertEquals("couchdb", $configProvider->get("settings::couchdb::user"));
-        $this->assertEquals(self::PRELOADED_CONFIG["settings"]["couchdb"], $configProvider->get("couchdb::*"));
+        $this->assertEquals(self::PRELOADED_CONFIG["couchdb"], $configProvider->get("couchdb::*"));
     }
 
     /**
      * @dataProvider configParamsProvider
      */
-    public function testGetLoadedConfigValue(array $paramsFixture)
+    public function testGetYamlLoaderConfig(array $paramsFixture)
     {
         $configProvider = new ConfigProvider(
-            self::PRELOADED_CONFIG,
             new ConfigProviderParams($paramsFixture, "settings::couchdb")
         );
 
@@ -59,11 +67,10 @@ final class ConfigProviderTest extends TestCase
     /**
      * @dataProvider configParamsProvider
      */
-    public function testGetLoadedCascadedConfigValue(array $paramsFixture)
+    public function testGetCascadedYamlLoaderConfig(array $paramsFixture)
     {
         $paramsFixture["connections"]["sources"][] = "dev.connection.yml";
         $configProvider = new ConfigProvider(
-            self::PRELOADED_CONFIG,
             new ConfigProviderParams($paramsFixture, "settings::couchdb")
         );
 
@@ -81,6 +88,12 @@ final class ConfigProviderTest extends TestCase
     public function configParamsProvider()
     {
         $paramsFixture = [
+            "settings" => [
+                "loader" => ArrayConfigLoader::class,
+                "schema" => __DIR__."/connection_schema.php", // not implemented yet
+                "locations" => [],
+                "sources" => self::PRELOADED_CONFIG
+            ],
             "connections" => [
                 "loader" => YamlConfigLoader::class,
                 "schema" => __DIR__."/connection_schema.php", // not implemented yet

@@ -1,25 +1,20 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Config;
 
 interface ConfigLoaderInterface
 {
-    /**
-     * @param string[] $locations
-     * @param string[] $sources
-     * @return mixed[]
-     */
     public function load(array $locations, array $sources): array;
 
-    /**
-     * @param mixed[] $config
-     * @return string
-     */
     public function serialize(array $config): string;
 
-    /**
-     * @param string $serializedConfig
-     * @return mixed[]
-     */
     public function deserialize(string $serializedConfig): array;
 }

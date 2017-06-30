@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Config;
 
@@ -6,24 +14,13 @@ use Symfony\Component\Yaml\Yaml;
 
 final class YamlConfigLoader implements ConfigLoaderInterface
 {
-    /**
-     * @var Yaml
-     */
     private $yamlParser;
 
-    /**
-     * @param Yaml|null $yamlParser
-     */
     public function __construct(Yaml $yamlParser = null)
     {
         $this->yamlParser = $yamlParser ?? new Yaml;
     }
 
-    /**
-     * @param string[] $locations
-     * @param string[] $sources
-     * @return mixed[]
-     */
     public function load(array $locations, array $sources): array
     {
         $loadedConfigs = [];
@@ -44,20 +41,12 @@ final class YamlConfigLoader implements ConfigLoaderInterface
         return $loadedConfigs;
     }
 
-    /**
-     * @param mixed[] $config
-     * @return string
-     */
     public function serialize(array $config): string
     {
         // not implemented yet
         return '';
     }
 
-    /**
-     * @param string $serializedConfig
-     * @return mixed[]
-     */
     public function deserialize(string $serializedConfig): array
     {
         // not implemented yet

@@ -1,40 +1,27 @@
 <?php
+/**
+ * This file is part of the daikon/config project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Daikon\Config;
 
 final class ConfigPath implements ConfigPathInterface
 {
-    /**
-     * @var string
-     */
     private const WILDCARD_TOKEN = "*";
 
-    /**
-     * @var string
-     */
     private const PATH_SEP = "::";
 
-    /**
-     * @var string
-     */
     private $scope;
 
-    /**
-     * @var string
-     */
     private $namespace;
 
-    /**
-     * @var string
-     */
     private $key;
 
-    /**
-     * @param string $pathString
-     * @param string $defaultScope
-     * @param string $defaultNamespace
-     * @return ConfigPathInterface
-     */
     public static function fromPathString(
         string $pathString,
         string $defaultScope,
@@ -60,60 +47,37 @@ final class ConfigPath implements ConfigPathInterface
         return new static(...array_reverse($pathParts));
     }
 
-    /**
-     * @return string
-     */
     public function getScope(): string
     {
         return $this->scope;
     }
 
-    /**
-     * @return string
-     */
     public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    /**
-     * @return bool
-     */
     public function hasWildcardNamespace(): bool
     {
         return $this->namespace === self::WILDCARD_TOKEN;
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @return bool
-     */
     public function hasWildcardKey(): bool
     {
         return $this->key === self::WILDCARD_TOKEN;
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         $pathParts = [ $this->scope, $this->namespace, $this->key ];
         return join(self::PATH_SEP, $pathParts);
     }
 
-    /**
-     * @param string $key
-     * @param string $namespace
-     * @param string $scope
-     */
     private function __construct(string $key, string $namespace, string $scope)
     {
         if (empty($key)) {
