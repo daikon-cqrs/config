@@ -32,9 +32,6 @@ final class ConfigPath implements ConfigPathInterface
             throw new \Exception("Initializing malformed ConfigPath: path may not start with delimiter.");
         }
         $pathParts = explode(self::PATH_SEP, $pathString);
-        if (empty($pathParts)) {
-            throw new \Exception("Initializing an empty ConfigPath is not supported.");
-        }
         if (count($pathParts) > 3) {
             throw new \Exception("Initializing a ConfigPath with more than three segments is not supported.");
         }

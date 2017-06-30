@@ -18,7 +18,6 @@ final class ConfigPathTest extends TestCase
     public function testFullPathGiven()
     {
         $configPath = ConfigPath::fromPathString("settings::core::app_version", "config", "global");
-
         $this->assertEquals("settings", $configPath->getScope());
         $this->assertEquals("core", $configPath->getNamespace());
         $this->assertEquals("app_version", $configPath->getKey());
@@ -68,5 +67,13 @@ final class ConfigPathTest extends TestCase
     public function testMalformedPath()
     {
         ConfigPath::fromPathString("::core::app_version", "", "");
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testTooManyPathParts()
+    {
+        ConfigPath::fromPathString("config::core::app_version::foo", "", "");
     }
 }
