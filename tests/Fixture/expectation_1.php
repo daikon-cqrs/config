@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 return [
     'connections' =>[
-        'hlx.security' => [
+        'hlx-security' => [
             'event_source' => [
                 'class' => 'Honeybee\\Infrastructure\\DataAccess\\Connector\\GuzzleConnector',
                 'settings' => [

@@ -14,37 +14,19 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
 {
     private $params;
 
-    private $defaultScope;
-
-    private $defaultNamespace;
-
-    public function __construct(array $params, string $defaultScopeAndNamespace)
+    public function __construct(array $params)
     {
-        foreach ($params as $scope => $scopeParams) {
-            $params[$scope] = $this->verifyParams($scope, $scopeParams);
-        }
-        $this->params = $params;
-        $scopeParts = explode("::", $defaultScopeAndNamespace);
-        if (count($scopeParts) !== 2) {
-            throw new \Exception("Invalid defaultScopeAndNamespace given.");
-        }
-        list($this->defaultScope, $this->defaultNamespace) = $scopeParts;
+        $this->params = $this->verifyParams($params);
     }
 
-    public function getDefaultScope(): string
+    public function hasScope(string $scope): bool
     {
-        return $this->defaultScope;
+        return isset($this->params[$scope]);
     }
 
-    public function getDefaultNamespace(): string
+    public function getLoader(string $scope): ConfigLoaderInterface
     {
-        return $this->defaultNamespace;
-    }
-
-    public function getLoader(ConfigPathInterface $configPath): ConfigLoaderInterface
-    {
-        $scope = $configPath->getScope();
-        $this->assertScopeExists($configPath);
+        $this->assertScopeExists($scope);
         $loader = $this->params[$scope]["loader"];
         if (!is_object($loader)) {
             $this->params[$scope]["loader"] = new $loader;
@@ -52,76 +34,78 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]["loader"];
     }
 
-    public function getLocations(ConfigPathInterface $configPath): array
+    public function getLocations(string $scope): array
     {
-        $scope = $configPath->getScope();
-        $this->assertScopeExists($configPath);
+        $this->assertScopeExists($scope);
         return $this->params[$scope]["locations"];
     }
 
-    public function getSources(ConfigPathInterface $configPath): array
+    public function getSources(string $scope): array
     {
-        $scope = $configPath->getScope();
-        $this->assertScopeExists($configPath);
+        $this->assertScopeExists($scope);
         return $this->params[$scope]["sources"];
     }
 
-    private function verifyParams(string $scope, array $scopeParams): array
+    private function verifyParams(array $params): array
     {
-        $this->verifyLocations($scope, $scopeParams);
-        if (!isset($scopeParams["locations"])) {
-            $scopeParams["locations"] = [];
+        if (empty($params)) {
+            throw new \Exception("Given params may not be empty.");
         }
-        $this->verifySources($scope, $scopeParams);
-        $this->verifyLoader($scope, $scopeParams);
-        return $scopeParams;
+        foreach ($params as $scope => $scopeParams) {
+            if (isset($scopeParams["locations"])) {
+                $this->checkLocations($scope, $scopeParams);
+            } else {
+                $params[$scope]["locations"] = [];
+            }
+            $this->checkSources($scope, $scopeParams);
+            $this->checkLoader($scope, $scopeParams);
+        }
+        return $params;
     }
 
-    private function verifyLocations(string $scope, array $scopeParams)
+    private function checkLocations(string $scope, array $scopeParams)
     {
-        if (isset($scopeParams['locations']) && !is_array($scopeParams['locations'])) {
+        if (!is_array($scopeParams['locations'])) {
             throw new \Exception("The 'locations' param within scope: '$scope' must be an array");
         }
-        return $scopeParams;
     }
 
-    private function verifySources(string $scope, array $scopeParams)
+    private function checkSources(string $scope, array $params)
     {
-        if (!isset($scopeParams['sources'])) {
+        if (!isset($params['sources'])) {
             throw new \Exception("Missing required key 'sources' within scope: '$scope'");
         }
-        if (!is_array($scopeParams['sources'])) {
+        if (!is_array($params['sources'])) {
             throw new \Exception("The 'sources' param within scope: '$scope' must be an array");
         }
     }
 
-    private function verifyLoader(string $scope, array $scopeParams)
+    private function checkLoader(string $scope, array $params)
     {
-        if (!isset($scopeParams['loader'])) {
+        if (!isset($params['loader'])) {
             throw new \Exception("Missing required key 'loader' within scope: '$scope'");
         }
-        if (!is_string($scopeParams['loader'])) {
+        if (!is_string($params['loader'])) {
             throw new \Exception("The 'loader' param within scope: '$scope' must be a string(fqcn)");
         }
-        if (!class_exists($scopeParams['loader'])) {
+        if (!class_exists($params['loader'])) {
             throw new \Exception(
-                "Configured loader: '".$scopeParams['loader']."' for scope: '$scope' can not be found."
+                "Configured loader: '".$params['loader']."' for scope: '$scope' can not be found."
             );
         }
-        $implementedInterfaces = class_implements($scopeParams['loader']);
+        $implementedInterfaces = class_implements($params['loader']);
         if (!in_array(ConfigLoaderInterface::class, $implementedInterfaces)) {
             throw new \Exception(
-                "Configured loader: '".$scopeParams['loader']."' for scope: '$scope' ".
+                "Configured loader: '".$params['loader']."' for scope: '$scope' ".
                 "does not implement required interface: ".ConfigLoaderInterface::class
             );
         }
     }
 
-    private function assertScopeExists(ConfigPathInterface $configPath)
+    private function assertScopeExists(string $scope)
     {
-        $scope = $configPath->getScope();
-        if (!isset($this->params[$scope])) {
-            throw new \Exception("$configPath: Given scope: '$scope' has not been registered.");
+        if (!$this->hasScope($scope)) {
+            throw new \Exception("Given scope: '$scope' has not been registered.");
         }
     }
 }

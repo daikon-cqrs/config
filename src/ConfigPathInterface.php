@@ -12,28 +12,15 @@ namespace Daikon\Config;
 
 interface ConfigPathInterface
 {
-
-    public static function fromPathString(
-        string $pathString,
-        string $defaultScope,
-        string $defaultNamespace
-    ): ConfigPathInterface;
-
+    public static function fromString(string $path): ConfigPathInterface;
 
     public function getScope(): string;
 
+    public function getParts(): array;
 
-    public function getNamespace(): string;
+    public function hasParts(): bool;
 
-
-    public function hasWildcardNamespace(): bool;
-
-
-    public function getKey(): string;
-
-
-    public function hasWildcardKey(): bool;
-
+    public function getLength(): int;
 
     public function __toString(): string;
 }

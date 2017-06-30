@@ -19,89 +19,81 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
 {
-    const PRELOADED_CONFIG = [
+    private const FIX_SETTINGS = [
         "couchdb" => [
             "host" => "127.0.0.1",
             "port" => 5984,
             "transport" => "https",
             "user" => "couchdb",
-            "password" => "couchdb"
+            "password" => "couchdb",
         ]
     ];
 
     /**
-     * @dataProvider configParamsProvider
+     * @dataProvider paramsProvider
      */
-    public function testGetArrayLoaderConfig(array $paramsFixture)
+    public function testGetArrayLoadedValue(array $params)
     {
-        $configProvider = new ConfigProvider(
-            new ConfigProviderParams($paramsFixture, "settings::couchdb")
-        );
+        $configProvider = new ConfigProvider(new ConfigProviderParams($params));
 
-        $this->assertInstanceOf(ConfigProviderInterface::class, $configProvider);
-        $this->assertEquals("127.0.0.1", $configProvider->get("couchdb::host"));
-        $this->assertEquals("couchdb", $configProvider->get("settings::couchdb::user"));
-        $this->assertEquals(self::PRELOADED_CONFIG["couchdb"], $configProvider->get("couchdb::*"));
+        $this->assertEquals("127.0.0.1", $configProvider->get("settings.couchdb.host"));
+        $this->assertEquals("couchdb", $configProvider->get("settings.couchdb.user"));
+        $this->assertEquals(self::FIX_SETTINGS["couchdb"], $configProvider->get("settings.couchdb"));
     }
 
     /**
-     * @dataProvider configParamsProvider
+     * @dataProvider paramsProvider
      */
-    public function testGetYamlLoaderConfig(array $paramsFixture)
+    public function testGetYamlLoaderConfig(array $params)
     {
-        $configProvider = new ConfigProvider(
-            new ConfigProviderParams($paramsFixture, "settings::couchdb")
-        );
+        $configProvider = new ConfigProvider(new ConfigProviderParams($params));
 
         $expected = require __DIR__."/Fixture/expectation_1.php";
         $this->assertEquals(
             $expected["connections"],
-            $configProvider->get("connections::*::*")
+            $configProvider->get("connections")
         );
         $this->assertEquals(
-            $expected["connections"]["hlx.security"],
-            $configProvider->get("connections::hlx.security::*")
+            $expected["connections"]["hlx-security"],
+            $configProvider->get("connections.hlx-security")
         );
     }
 
     /**
-     * @dataProvider configParamsProvider
+     * @dataProvider paramsProvider
      */
-    public function testGetCascadedYamlLoaderConfig(array $paramsFixture)
+    public function testGetCascadedYamlLoaderConfig(array $params)
     {
-        $paramsFixture["connections"]["sources"][] = "dev.connection.yml";
-        $configProvider = new ConfigProvider(
-            new ConfigProviderParams($paramsFixture, "settings::couchdb")
-        );
+        $params["connections"]["sources"][] = "dev.connection.yml";
+        $configProvider = new ConfigProvider(new ConfigProviderParams($params));
 
         $expected = require __DIR__."/Fixture/expectation_2.php";
         $this->assertEquals(
             $expected["connections"],
-            $configProvider->get("connections::*::*")
+            $configProvider->get("connections")
         );
         $this->assertEquals(
-            $expected["connections"]["hlx.security"],
-            $configProvider->get("connections::hlx.security::*")
+            $expected["connections"]["hlx-security"],
+            $configProvider->get("connections.hlx-security")
         );
     }
 
-    public function configParamsProvider()
+    public function paramsProvider()
     {
         $paramsFixture = [
             "settings" => [
                 "loader" => ArrayConfigLoader::class,
-                "schema" => __DIR__."/connection_schema.php", // not implemented yet
-                "sources" => self::PRELOADED_CONFIG
+                "sources" => self::FIX_SETTINGS,
             ],
             "connections" => [
                 "loader" => YamlConfigLoader::class,
                 "schema" => __DIR__."/connection_schema.php", // not implemented yet
                 "locations" => [
-                    __DIR__."/Fixture"
+                    __DIR__."/Fixture",
                 ],
                 "sources" => [
-                    "connection.yml"
-                ]
+                    "connection.yml",
+                ],
             ]
         ];
         return [ [ $paramsFixture ] ];

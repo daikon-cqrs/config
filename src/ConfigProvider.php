@@ -16,73 +16,60 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private $config;
 
-    private $configParams;
+    private $params;
 
-    public function __construct(ConfigProviderParamsInterface $configParams)
+    public function __construct(ConfigProviderParamsInterface $params)
     {
-        $this->configParams = $configParams;
+        $this->params = $params;
+        $this->config = [];
     }
 
     public function get(string $path, $default = null)
     {
-        $configPath = $this->buildPath($path);
-        $scopeConfig = $this->retrieveScope($configPath);
-        if ($configPath->hasWildcardNamespace()) {
-            return $scopeConfig;
+        $configPath = ConfigPath::fromString($path);
+        $scope = $configPath->getScope();
+        if (!isset($this->config[$scope])) {
+            if ($this->params->hasScope($scope)) {
+                $this->config[$scope] = $this->loadScope($scope);
+            } else {
+                return $default;
+            }
         }
-        if (isset($scopeConfig[$configPath->getNamespace()]) && $configPath->hasWildcardKey()) {
-            return $scopeConfig[$configPath->getNamespace()];
+        if ($configPath->hasParts()) {
+            return $this->resolvePath($configPath) ?? $default;
         }
-        return $this->findNamespaceValue($scopeConfig[$configPath->getNamespace()], $configPath) ?? $default;
+        return $this->config[$scope];
     }
 
     public function has(string $path): bool
     {
-        try {
-            return $this->get($path) !== null;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return $this->get($path) !== null;
     }
 
-    private function retrieveScope(ConfigPathInterface $path): array
+    private function loadScope(string $scope): array
     {
-        $scope = $path->getScope();
-        if (isset($this->config[$scope])) {
-            return $this->config[$scope];
-        }
-        $this->config[$scope] = $this->interpolateConfigValues(
-            $this->configParams->getLoader($path)->load(
-                $this->configParams->getLocations($path),
-                $this->configParams->getSources($path)
+        return $this->interpolateConfigValues(
+            $this->params->getLoader($scope)->load(
+                $this->params->getLocations($scope),
+                $this->params->getSources($scope)
             )
         );
-        return $this->config[$scope];
     }
 
-    private function buildPath(string $path): ConfigPathInterface
+    private function resolvePath(ConfigPathInterface $path)
     {
-        return ConfigPath::fromPathString(
-            $path,
-            $this->configParams->getDefaultScope(),
-            $this->configParams->getDefaultNamespace()
-        );
-    }
-
-    private function findNamespaceValue(array $namespace, ConfigPathInterface $path)
-    {
-        $value = &$namespace;
-        $keyParts = explode(".", $path->getKey());
+        $value = &$this->config[$path->getScope()];
+        $pathParts = $path->getParts();
         do {
-            $curKey = array_shift($keyParts);
+            $pathPart = array_shift($pathParts);
             if (!is_array($value)) {
                 throw new \Exception("Trying to traverse non array-value with key: '".$path->getKey()."'");
             }
-            if (!isset($value[$curKey])) {
+            if (!isset($value[$pathPart])) {
                 return null;
             }
-            $value = &$value[$curKey];
-        } while (!empty($keyParts));
+            $value = &$value[$pathPart];
+        } while (!empty($pathParts));
         return $value;
     }
 

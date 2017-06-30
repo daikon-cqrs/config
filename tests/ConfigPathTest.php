@@ -15,65 +15,55 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigPathTest extends TestCase
 {
-    public function testFullPathGiven()
+    public function testGetScope()
     {
-        $configPath = ConfigPath::fromPathString("settings::core::app_version", "config", "global");
+        $configPath = ConfigPath::fromString("settings.core.app_version");
         $this->assertEquals("settings", $configPath->getScope());
-        $this->assertEquals("core", $configPath->getNamespace());
-        $this->assertEquals("app_version", $configPath->getKey());
+        $configPath = ConfigPath::fromString("settings");
+        $this->assertEquals("settings", $configPath->getScope());
     }
 
-    public function testWithNamespaceAndKeyGiven()
+    public function testGetParts()
     {
-        $configPath = ConfigPath::fromPathString("core::app_version", "config", "global");
-        $this->assertEquals("config", $configPath->getScope());
-        $this->assertEquals("core", $configPath->getNamespace());
-        $this->assertEquals("app_version", $configPath->getKey());
+        $configPath = ConfigPath::fromString("settings.core.app_version");
+        $this->assertEquals([ "core", "app_version" ], $configPath->getParts());
+        $configPath = ConfigPath::fromString("settings");
+        $this->assertEquals([], $configPath->getParts());
     }
 
-    public function testWithOnlyKeyGiven()
+    public function testGetLength()
     {
-        $configPath = ConfigPath::fromPathString("app_version", "config", "global");
-        $this->assertEquals("config", $configPath->getScope());
-        $this->assertEquals("global", $configPath->getNamespace());
-        $this->assertEquals("app_version", $configPath->getKey());
+        $configPath = ConfigPath::fromString("settings.core.app_version");
+        $this->assertEquals(2, $configPath->getLength());
+    }
+
+    public function testHasParts()
+    {
+        $configPath = ConfigPath::fromString("settings.core.app_version");
+        $this->assertTrue($configPath->hasParts());
+        $configPath = ConfigPath::fromString("settings");
+        $this->assertFalse($configPath->hasParts());
     }
 
     public function testToString()
     {
-        $configPath = ConfigPath::fromPathString("app_env", "config", "global");
-        $this->assertEquals("config::global::app_env", (string)$configPath);
+        $configPath = ConfigPath::fromString("settings.core.app_version");
+        $this->assertEquals("settings.core.app_version", (string)$configPath);
     }
 
     /**
      * @expectedException \Exception
      */
-    public function testWithEmptyPathAndDefaultsGiven()
+    public function testWithEmptyPath()
     {
-        ConfigPath::fromPathString("", "", "");
-    }
-
-    /**
-     * @expectedException \ArgumentCountError
-     */
-    public function testWithNoPathGiven()
-    {
-        ConfigPath::fromPathString();
+        ConfigPath::fromString("");
     }
 
     /**
      * @expectedException \Exception
      */
-    public function testMalformedPath()
+    public function testInvalidPathWithLeadingSeparator()
     {
-        ConfigPath::fromPathString("::core::app_version", "", "");
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testTooManyPathParts()
-    {
-        ConfigPath::fromPathString("config::core::app_version::foo", "", "");
+        ConfigPath::fromString(".settings.core.app_version");
     }
 }

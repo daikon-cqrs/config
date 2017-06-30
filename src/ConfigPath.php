@@ -12,36 +12,20 @@ namespace Daikon\Config;
 
 final class ConfigPath implements ConfigPathInterface
 {
-    private const WILDCARD_TOKEN = "*";
-
-    private const PATH_SEP = "::";
+    private const PATH_SEP = ".";
 
     private $scope;
 
-    private $namespace;
+    private $parts;
 
-    private $key;
-
-    public static function fromPathString(
-        string $pathString,
-        string $defaultScope,
-        string $defaultNamespace
-    ): ConfigPathInterface {
-        $delimiterPos = strpos($pathString, self::PATH_SEP);
-        if ($delimiterPos === 0) {
-            throw new \Exception("Initializing malformed ConfigPath: path may not start with delimiter.");
+    public static function fromString(string $path): ConfigPathInterface
+    {
+        $separatorPosition = strpos($path, self::PATH_SEP);
+        if ($separatorPosition === 0) {
+            throw new \Exception("Initializing malformed ConfigPath: Path may not start with separator.");
         }
-        $pathParts = explode(self::PATH_SEP, $pathString);
-        if (count($pathParts) > 3) {
-            throw new \Exception("Initializing a ConfigPath with more than three segments is not supported.");
-        }
-        if (count($pathParts) === 2) {
-            array_unshift($pathParts, $defaultScope);
-        }
-        if (count($pathParts) === 1) {
-            array_unshift($pathParts, $defaultScope, $defaultNamespace);
-        }
-        return new static(...array_reverse($pathParts));
+        $pathParts = explode(self::PATH_SEP, $path);
+        return new static(array_shift($pathParts), $pathParts);
     }
 
     public function getScope(): string
@@ -49,39 +33,34 @@ final class ConfigPath implements ConfigPathInterface
         return $this->scope;
     }
 
-    public function getNamespace(): string
+    public function getParts(): array
     {
-        return $this->namespace;
+        return $this->parts;
     }
 
-    public function hasWildcardNamespace(): bool
+    public function hasParts(): bool
     {
-        return $this->namespace === self::WILDCARD_TOKEN;
+        return !empty($this->parts);
     }
 
-    public function getKey(): string
+    public function getLength(): int
     {
-        return $this->key;
-    }
-
-    public function hasWildcardKey(): bool
-    {
-        return $this->key === self::WILDCARD_TOKEN;
+        return count($this->parts);
     }
 
     public function __toString(): string
     {
-        $pathParts = [ $this->scope, $this->namespace, $this->key ];
+        $pathParts = $this->parts;
+        array_unshift($pathParts, $this->scope);
         return join(self::PATH_SEP, $pathParts);
     }
 
-    private function __construct(string $key, string $namespace, string $scope)
+    private function __construct(string $scope, array $parts)
     {
-        if (empty($key)) {
-            throw new \Exception("Trying to create ConfigPath with empty key.");
+        if (empty($scope)) {
+            throw new \Exception("Trying to create ConfigPath from empty scope.");
         }
         $this->scope = $scope;
-        $this->namespace = $namespace;
-        $this->key = $key;
+        $this->parts = $parts;
     }
 }

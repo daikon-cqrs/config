@@ -12,13 +12,11 @@ namespace Daikon\Config;
 
 interface ConfigProviderParamsInterface
 {
-    public function getDefaultScope(): string;
+    public function hasScope(string $scope): bool;
 
-    public function getDefaultNamespace(): string;
+    public function getLoader(string $scope): ConfigLoaderInterface;
 
-    public function getLoader(ConfigPathInterface $configPath): ConfigLoaderInterface;
+    public function getLocations(string $scope): array;
 
-    public function getLocations(ConfigPathInterface $configPath): array;
-
-    public function getSources(ConfigPathInterface $configPath): array;
+    public function getSources(string $scope): array;
 }

@@ -1,5 +1,5 @@
 ---
-hlx.security:
+hlx-security:
   event_source:
     class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleDebugConnector
     settings:
