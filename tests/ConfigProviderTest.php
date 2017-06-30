@@ -91,7 +91,6 @@ final class ConfigProviderTest extends TestCase
             "settings" => [
                 "loader" => ArrayConfigLoader::class,
                 "schema" => __DIR__."/connection_schema.php", // not implemented yet
-                "locations" => [],
                 "sources" => self::PRELOADED_CONFIG
             ],
             "connections" => [

@@ -21,7 +21,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
     public function __construct(array $params, string $defaultScopeAndNamespace)
     {
         foreach ($params as $scope => $scopeParams) {
-            $this->verifyParams($scope, $scopeParams);
+            $params[$scope] = $this->verifyParams($scope, $scopeParams);
         }
         $this->params = $params;
         $scopeParts = explode("::", $defaultScopeAndNamespace);
@@ -66,21 +66,23 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]["sources"];
     }
 
-    private function verifyParams(string $scope, array $scopeParams)
+    private function verifyParams(string $scope, array $scopeParams): array
     {
         $this->verifyLocations($scope, $scopeParams);
+        if (!isset($scopeParams["locations"])) {
+            $scopeParams["locations"] = [];
+        }
         $this->verifySources($scope, $scopeParams);
         $this->verifyLoader($scope, $scopeParams);
+        return $scopeParams;
     }
 
     private function verifyLocations(string $scope, array $scopeParams)
     {
-        if (!isset($scopeParams['locations'])) {
-            throw new \Exception("Missing required key 'locations' within scope: '$scope'");
-        }
-        if (!is_array($scopeParams['locations'])) {
+        if (isset($scopeParams['locations']) && !is_array($scopeParams['locations'])) {
             throw new \Exception("The 'locations' param within scope: '$scope' must be an array");
         }
+        return $scopeParams;
     }
 
     private function verifySources(string $scope, array $scopeParams)
