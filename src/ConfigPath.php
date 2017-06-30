@@ -80,12 +80,6 @@ final class ConfigPath implements ConfigPathInterface
         if (empty($key)) {
             throw new \Exception("Trying to create ConfigPath with empty key.");
         }
-        if (empty($namespace)) {
-            throw new \Exception("Trying to create ConfigPath with empty namespace.");
-        }
-        if (empty($scope)) {
-            throw new \Exception("Trying to create ConfigPath with empty scope.");
-        }
         $this->scope = $scope;
         $this->namespace = $namespace;
         $this->key = $key;
