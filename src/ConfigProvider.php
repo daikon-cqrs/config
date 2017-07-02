@@ -28,17 +28,10 @@ final class ConfigProvider implements ConfigProviderInterface
     {
         $configPath = ConfigPath::fromString($path);
         $scope = $configPath->getScope();
-        if (!isset($this->config[$scope])) {
-            if ($this->params->hasScope($scope)) {
-                $this->config[$scope] = $this->loadScope($scope);
-            } else {
-                return $default;
-            }
+        if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
+            $this->config[$scope] = $this->loadScope($scope);
         }
-        if ($configPath->hasParts()) {
-            return $this->resolvePath($configPath) ?? $default;
-        }
-        return $this->config[$scope];
+        return $this->resolvePath($configPath) ?? $default;
     }
 
     public function has(string $path): bool
@@ -46,30 +39,33 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->get($path) !== null;
     }
 
-    private function loadScope(string $scope): array
+    private function loadScope(string $scope)
     {
-        return $this->interpolateConfigValues(
-            $this->params->getLoader($scope)->load(
-                $this->params->getLocations($scope),
-                $this->params->getSources($scope)
-            )
+        $this->config[$scope] = $this->params->getLoader($scope)->load(
+            $this->params->getLocations($scope),
+            $this->params->getSources($scope)
         );
+        return $this->interpolateConfigValues($this->config[$scope]);
     }
 
     private function resolvePath(ConfigPathInterface $path)
     {
-        $value = &$this->config[$path->getScope()];
+        $scope = $path->getScope();
+        if (!isset($this->config[$scope])) {
+            return null;
+        }
+        $value = &$this->config[$scope];
         $pathParts = $path->getParts();
-        do {
+        while (!empty($pathParts)) {
             $pathPart = array_shift($pathParts);
-            if (!is_array($value)) {
-                throw new \Exception("Trying to traverse non array-value with key: '".$path->getKey()."'");
-            }
             if (!isset($value[$pathPart])) {
                 return null;
             }
+            if (!is_array($value)) {
+                throw new \Exception("Trying to traverse non array-value with path: '".$path->getKey()."'");
+            }
             $value = &$value[$pathPart];
-        } while (!empty($pathParts));
+        }
         return $value;
     }
 

@@ -1,5 +1,5 @@
 ---
-hlx-security:
+project-db:
   event_source:
     class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleConnector
     settings:

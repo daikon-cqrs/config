@@ -14,88 +14,93 @@ use Daikon\Config\ArrayConfigLoader;
 use Daikon\Config\ConfigProvider;
 use Daikon\Config\ConfigProviderInterface;
 use Daikon\Config\ConfigProviderParams;
-use Daikon\Config\YamlConfigLoader;
+use Daikon\Config\ConfigProviderParamsInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
 {
-    private const FIX_SETTINGS = [
-        "couchdb" => [
-            "host" => "127.0.0.1",
-            "port" => 5984,
-            "transport" => "https",
-            "user" => "couchdb",
-            "password" => "couchdb",
+    private const CONFIG_FIXTURE = [
+        'project' => [
+            'environment' => 'development'
+        ],
+        'auth' => [
+            'simple' => [
+                'username' => 'superuser',
+                'password' => 'p455w0rd'
+            ]
         ]
     ];
 
     /**
-     * @dataProvider paramsProvider
+     * @dataProvider provideSut
      */
-    public function testGetArrayLoadedValue(array $params)
+    public function testHas(ConfigProviderInterface $sut)
     {
-        $configProvider = new ConfigProvider(new ConfigProviderParams($params));
+        $this->assertTrue($sut->has("settings"));
+        $this->assertTrue($sut->has("settings.project"));
+        $this->assertTrue($sut->has("settings.project.environment"));
+        $this->assertTrue($sut->has("settings.auth.simple.username"));
 
-        $this->assertEquals("127.0.0.1", $configProvider->get("settings.couchdb.host"));
-        $this->assertEquals("couchdb", $configProvider->get("settings.couchdb.user"));
-        $this->assertEquals(self::FIX_SETTINGS["couchdb"], $configProvider->get("settings.couchdb"));
+        $this->assertFalse($sut->has("foobar"));
+        $this->assertFalse($sut->has("settings.foobar"));
+        $this->assertFalse($sut->has("settings.auth.foobar"));
     }
 
     /**
-     * @dataProvider paramsProvider
+     * @dataProvider provideSut
      */
-    public function testGetYamlLoaderConfig(array $params)
+    public function testGet(ConfigProviderInterface $sut)
     {
-        $configProvider = new ConfigProvider(new ConfigProviderParams($params));
-
-        $expected = require __DIR__."/Fixture/expectation_1.php";
+        $this->assertEquals(self::CONFIG_FIXTURE, $sut->get("settings"));
         $this->assertEquals(
-            $expected["connections"],
-            $configProvider->get("connections")
+            self::CONFIG_FIXTURE["project"],
+            $sut->get("settings.project")
         );
-        $this->assertEquals(
-            $expected["connections"]["hlx-security"],
-            $configProvider->get("connections.hlx-security")
-        );
+        $this->assertEquals("development", $sut->get("settings.project.environment"));
+        $this->assertEquals("superuser", $sut->get("settings.auth.simple.username"));
     }
 
     /**
-     * @dataProvider paramsProvider
+     * @dataProvider provideSut
      */
-    public function testGetCascadedYamlLoaderConfig(array $params)
+    public function testGetWithDefault(ConfigProviderInterface $sut)
     {
-        $params["connections"]["sources"][] = "dev.connection.yml";
-        $configProvider = new ConfigProvider(new ConfigProviderParams($params));
-
-        $expected = require __DIR__."/Fixture/expectation_2.php";
-        $this->assertEquals(
-            $expected["connections"],
-            $configProvider->get("connections")
-        );
-        $this->assertEquals(
-            $expected["connections"]["hlx-security"],
-            $configProvider->get("connections.hlx-security")
-        );
+        $this->assertEquals("development", $sut->get("settings.project.environment", "bar"));
+        $this->assertEquals("bar", $sut->get("foo", "bar"));
+        $this->assertNull($sut->get("foo"));
     }
 
-    public function paramsProvider()
+    public function testInterpolation()
     {
-        $paramsFixture = [
+        $sut = new ConfigProvider(new ConfigProviderParams([
             "settings" => [
                 "loader" => ArrayConfigLoader::class,
-                "sources" => self::FIX_SETTINGS,
-            ],
-            "connections" => [
-                "loader" => YamlConfigLoader::class,
-                "schema" => __DIR__."/connection_schema.php", // not implemented yet
-                "locations" => [
-                    __DIR__."/Fixture",
-                ],
                 "sources" => [
-                    "connection.yml",
-                ],
+                    'project' => [
+                        'secret' => 'c4ntgu35th15'
+                    ],
+                    'auth' => [
+                        'simple' => [
+                            'username' => 'superuser',
+                            'password' => '${settings.project.secret}'
+                        ]
+                    ]
+                ]
             ]
-        ];
-        return [ [ $paramsFixture ] ];
+        ]));
+        $this->assertEquals("c4ntgu35th15", $sut->get("settings.auth.simple.password"));
+    }
+
+    public function provideSut()
+    {
+        $configProvider = new ConfigProvider(
+            new ConfigProviderParams([
+                "settings" => [
+                    "loader" => ArrayConfigLoader::class,
+                    "sources" => self::CONFIG_FIXTURE
+                ]
+            ])
+        );
+        return [ [ $configProvider ] ];
     }
 }
