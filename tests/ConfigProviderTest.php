@@ -24,7 +24,7 @@ final class ConfigProviderTest extends TestCase
             'environment' => 'development'
         ],
         'auth' => [
-            'simple' => [
+            'simple.credentials' => [
                 'username' => 'superuser',
                 'password' => 'p455w0rd'
             ]
@@ -39,11 +39,11 @@ final class ConfigProviderTest extends TestCase
         $this->assertTrue($sut->has("settings"));
         $this->assertTrue($sut->has("settings.project"));
         $this->assertTrue($sut->has("settings.project.environment"));
-        $this->assertTrue($sut->has("settings.auth.simple.username"));
+        $this->assertTrue($sut->has("settings.auth.simple.credentials.username"));
 
         $this->assertFalse($sut->has("foobar"));
         $this->assertFalse($sut->has("settings.foobar"));
-        $this->assertFalse($sut->has("settings.auth.foobar"));
+        $this->assertFalse($sut->has("settings.auth.simple.foobar"));
     }
 
     /**
@@ -57,7 +57,11 @@ final class ConfigProviderTest extends TestCase
             $sut->get("settings.project")
         );
         $this->assertEquals("development", $sut->get("settings.project.environment"));
-        $this->assertEquals("superuser", $sut->get("settings.auth.simple.username"));
+        $this->assertEquals("superuser", $sut->get("settings.auth.simple.credentials.username"));
+        $this->assertEquals(
+            self::CONFIG_FIXTURE["auth"]["simple.credentials"],
+            $sut->get("settings.auth.simple.credentials")
+        );
     }
 
     /**

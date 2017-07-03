@@ -56,10 +56,18 @@ final class ConfigProvider implements ConfigProviderInterface
         }
         $value = &$this->config[$scope];
         $pathParts = $path->getParts();
+        $pathLen = $path->getLength();
+        $pathPos = 0;
         while (!empty($pathParts)) {
             $pathPart = array_shift($pathParts);
+            $pathPos++;
             if (!isset($value[$pathPart])) {
-                return null;
+                if ($pathPos === $pathLen) {
+                    return null;
+                } else {
+                    array_unshift($pathParts, $pathPart.$path->getSeparator().array_shift($pathParts));
+                    continue;
+                }
             }
             if (!is_array($value)) {
                 throw new \Exception("Trying to traverse non array-value with path: '".$path->getKey()."'");

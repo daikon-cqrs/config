@@ -18,14 +18,16 @@ final class ConfigPath implements ConfigPathInterface
 
     private $parts;
 
-    public static function fromString(string $path): ConfigPathInterface
+    private $separator;
+
+    public static function fromString(string $path, string $separator = self::PATH_SEP): ConfigPathInterface
     {
-        $separatorPosition = strpos($path, self::PATH_SEP);
+        $separatorPosition = strpos($path, $separator);
         if ($separatorPosition === 0) {
-            throw new \Exception("Initializing malformed ConfigPath: Path may not start with separator.");
+            throw new \Exception("Initializing malformed ConfigPath: Path may not start with $separator.");
         }
         $pathParts = explode(self::PATH_SEP, $path);
-        return new static(array_shift($pathParts), $pathParts);
+        return new static(array_shift($pathParts), $pathParts, $separator);
     }
 
     public function getScope(): string
@@ -48,6 +50,11 @@ final class ConfigPath implements ConfigPathInterface
         return count($this->parts);
     }
 
+    public function getSeparator(): string
+    {
+        return $this->separator;
+    }
+
     public function __toString(): string
     {
         $pathParts = $this->parts;
@@ -55,11 +62,12 @@ final class ConfigPath implements ConfigPathInterface
         return join(self::PATH_SEP, $pathParts);
     }
 
-    private function __construct(string $scope, array $parts)
+    private function __construct(string $scope, array $parts, string $separator)
     {
         if (empty($scope)) {
             throw new \Exception("Trying to create ConfigPath from empty scope.");
         }
+        $this->separator = $separator;
         $this->scope = $scope;
         $this->parts = $parts;
     }

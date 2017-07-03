@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 return [
-    'project-db' => [
+    'project.db' => [
         'event_source' => [
             'class' => 'Honeybee\\Infrastructure\\DataAccess\\Connector\\GuzzleConnector',
             'settings' => [
@@ -20,7 +20,7 @@ return [
                 'host' => '${settings.couchdb.host}',
                 'port' => '${settings.couchdb.port}',
                 'transport' => '${settings.couchdb.transport}',
-                'database' => 'hlx-security',
+                'database' => 'project-db',
                 'status_test' => '/'
             ]
         ]

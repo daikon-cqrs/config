@@ -12,7 +12,7 @@ namespace Daikon\Config;
 
 interface ConfigPathInterface
 {
-    public static function fromString(string $path): ConfigPathInterface;
+    public static function fromString(string $path, string $separator): ConfigPathInterface;
 
     public function getScope(): string;
 
@@ -21,6 +21,8 @@ interface ConfigPathInterface
     public function hasParts(): bool;
 
     public function getLength(): int;
+
+    public function getSeparator(): string;
 
     public function __toString(): string;
 }

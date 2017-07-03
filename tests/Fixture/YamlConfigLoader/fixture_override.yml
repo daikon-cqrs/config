@@ -1,5 +1,5 @@
 ---
-project-db:
+project.db:
   event_source:
     class: Honeybee\Infrastructure\DataAccess\Connector\GuzzleDebugConnector
     settings:
