@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the daikon/config project.
+ * This file is part of the daikon-cqrs/config project.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -41,10 +41,12 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function loadScope(string $scope)
     {
+        $this->scopesBeingLoaded[$scope] = true;
         $this->config[$scope] = $this->params->getLoader($scope)->load(
             $this->params->getLocations($scope),
             $this->params->getSources($scope)
         );
+        unset($this->scopesBeingLoaded[$scope]);
         return $this->interpolateConfigValues($this->config[$scope]);
     }
 
