@@ -123,7 +123,7 @@ final class ConfigProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testInvalidSourceInterpolation()
     {

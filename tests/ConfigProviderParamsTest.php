@@ -72,7 +72,7 @@ final class ConfigProviderParamsTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testEmptyParams()
     {
@@ -80,7 +80,7 @@ final class ConfigProviderParamsTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testMissingSources()
     {
@@ -93,7 +93,7 @@ final class ConfigProviderParamsTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testInvalidSources()
     {
@@ -106,7 +106,7 @@ final class ConfigProviderParamsTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testInvalidLocations()
     {
@@ -120,7 +120,7 @@ final class ConfigProviderParamsTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testMissingLoader()
     {
@@ -132,7 +132,7 @@ final class ConfigProviderParamsTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testInvalidLoader()
     {

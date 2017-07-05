@@ -52,7 +52,7 @@ final class ConfigPathTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testWithEmptyPath()
     {
@@ -60,7 +60,7 @@ final class ConfigPathTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Assert\AssertionFailedException
      */
     public function testInvalidPathWithLeadingSeparator()
     {

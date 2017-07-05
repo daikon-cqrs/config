@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Daikon\Config;
 
+use Assert\Assertion;
+
 final class ConfigPath implements ConfigPathInterface
 {
     private const PATH_SEP = '.';
@@ -22,10 +24,11 @@ final class ConfigPath implements ConfigPathInterface
 
     public static function fromString(string $path, string $separator = self::PATH_SEP): ConfigPathInterface
     {
-        $separatorPosition = strpos($path, $separator);
-        if ($separatorPosition === 0) {
-            throw new \Exception('Initializing malformed ConfigPath: Path may not start with: '.$separator);
-        }
+        Assertion::notSame(
+            0,
+            strpos($path, $separator),
+            'Initializing malformed ConfigPath: Path may not start with: '.$separator
+        );
         $pathParts = explode(self::PATH_SEP, $path);
         return new static(array_shift($pathParts), $pathParts, $separator);
     }
@@ -64,9 +67,7 @@ final class ConfigPath implements ConfigPathInterface
 
     private function __construct(string $scope, array $parts, string $separator)
     {
-        if (empty($scope)) {
-            throw new \Exception('Trying to create ConfigPath from empty scope.');
-        }
+        Assertion::notEmpty($scope, 'Trying to create ConfigPath from empty scope.');
         $this->separator = $separator;
         $this->scope = $scope;
         $this->parts = $parts;

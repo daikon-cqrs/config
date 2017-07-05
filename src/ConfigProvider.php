@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Daikon\Config;
 
+use Assert\Assertion;
+
 final class ConfigProvider implements ConfigProviderInterface
 {
     private const INTERPOLATION_PATTERN = '/(\$\{(.*?)\})/';
@@ -31,12 +33,12 @@ final class ConfigProvider implements ConfigProviderInterface
     {
         $configPath = ConfigPath::fromString($path);
         $scope = $configPath->getScope();
-        if (isset($this->preLoadInterpolations[$scope])) {
-            throw new \Exception(
-                'Recursive interpolations are not allowed when interpolating "locations" or "sources". '.
-                sprintf('Trying to recurse into scope: "%s"', $scope)
-            );
-        }
+        Assertion::keyNotExists(
+            $this->preLoadInterpolations,
+            $scope,
+            'Recursive interpolations are not allowed when interpolating "locations" or "sources". '.
+            sprintf('Trying to recurse into scope: "%s"', $scope)
+        );
         if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
             $this->config[$scope] = $this->loadScope($scope);
         }
@@ -85,9 +87,7 @@ final class ConfigProvider implements ConfigProviderInterface
                     continue;
                 }
             }
-            if (!is_array($value)) {
-                throw new \Exception(sprintf('Trying to traverse non array-value with path: "%s"', $path));
-            }
+            Assertion::isArray($value, sprintf('Trying to traverse non array-value with path: "%s"', $path));
             $value = &$value[$pathPart];
         }
         return $value;
