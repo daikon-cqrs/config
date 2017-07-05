@@ -27,35 +27,35 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
     public function getLoader(string $scope): ConfigLoaderInterface
     {
         $this->assertScopeExists($scope);
-        $loader = $this->params[$scope]["loader"];
+        $loader = $this->params[$scope]['loader'];
         if (!is_object($loader)) {
-            $this->params[$scope]["loader"] = new $loader;
+            $this->params[$scope]['loader'] = new $loader;
         }
-        return $this->params[$scope]["loader"];
+        return $this->params[$scope]['loader'];
     }
 
     public function getLocations(string $scope): array
     {
         $this->assertScopeExists($scope);
-        return $this->params[$scope]["locations"];
+        return $this->params[$scope]['locations'];
     }
 
     public function getSources(string $scope): array
     {
         $this->assertScopeExists($scope);
-        return $this->params[$scope]["sources"];
+        return $this->params[$scope]['sources'];
     }
 
     private function verifyParams(array $params): array
     {
         if (empty($params)) {
-            throw new \Exception("Given params may not be empty.");
+            throw new \Exception('Given params may not be empty.');
         }
         foreach ($params as $scope => $scopeParams) {
-            if (isset($scopeParams["locations"])) {
+            if (isset($scopeParams['locations'])) {
                 $this->checkLocations($scope, $scopeParams);
             } else {
-                $params[$scope]["locations"] = [];
+                $params[$scope]['locations'] = [];
             }
             $this->checkSources($scope, $scopeParams);
             $this->checkLoader($scope, $scopeParams);
@@ -66,46 +66,48 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
     private function checkLocations(string $scope, array $scopeParams)
     {
         if (!is_array($scopeParams['locations'])) {
-            throw new \Exception("The 'locations' param within scope: '$scope' must be an array");
+            throw new \Exception(sprintf('The "locations" param within scope: "%s" must be an array', $scope));
         }
     }
 
     private function checkSources(string $scope, array $params)
     {
         if (!isset($params['sources'])) {
-            throw new \Exception("Missing required key 'sources' within scope: '$scope'");
+            throw new \Exception(sprintf('Missing required key "sources" within scope: "%s"', $scope));
         }
         if (!is_array($params['sources'])) {
-            throw new \Exception("The 'sources' param within scope: '$scope' must be an array");
+            throw new \Exception(sprintf('The "sources" param within scope: "%s" must be an array', $scope));
         }
     }
 
     private function checkLoader(string $scope, array $params)
     {
         if (!isset($params['loader'])) {
-            throw new \Exception("Missing required key 'loader' within scope: '$scope'");
+            throw new \Exception(sprintf('Missing required key "loader" within scope: "%s"', $scope));
         }
         if (!is_string($params['loader'])) {
-            throw new \Exception("The 'loader' param within scope: '$scope' must be a string(fqcn)");
+            throw new \Exception(sprintf('The "loader" param within scope: "%s" must be a string(fqcn)', $scope));
         }
         if (!class_exists($params['loader'])) {
             throw new \Exception(
-                "Configured loader: '".$params['loader']."' for scope: '$scope' can not be found."
+                sprintf('Configured loader: "%s" for scope: "%s" can not be found.', $params['loader'], $scope)
             );
         }
         $implementedInterfaces = class_implements($params['loader']);
         if (!in_array(ConfigLoaderInterface::class, $implementedInterfaces)) {
-            throw new \Exception(
-                "Configured loader: '".$params['loader']."' for scope: '$scope' ".
-                "does not implement required interface: ".ConfigLoaderInterface::class
-            );
+            throw new \Exception(sprintf(
+                'Configured loader: "%s" for scope: "%s" does not implement required interface: %s',
+                $params['loader'],
+                $scope,
+                ConfigLoaderInterface::class
+            ));
         }
     }
 
     private function assertScopeExists(string $scope)
     {
         if (!$this->hasScope($scope)) {
-            throw new \Exception("Given scope: '$scope' has not been registered.");
+            throw new \Exception(sprintf('Given scope: "%s" has not been registered.', $scope));
         }
     }
 }

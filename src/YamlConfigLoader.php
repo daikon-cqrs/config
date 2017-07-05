@@ -25,8 +25,8 @@ final class YamlConfigLoader implements ConfigLoaderInterface
     {
         $loadedConfigs = [];
         foreach ($locations as $location) {
-            if (substr($location, -1) !== "/") {
-                $location .= "/";
+            if (substr($location, -1) !== '/') {
+                $location .= '/';
             }
             foreach ($sources as $source) {
                 $filepath = $location.$source;

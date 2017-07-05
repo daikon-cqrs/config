@@ -12,7 +12,7 @@ namespace Daikon\Config;
 
 final class ConfigPath implements ConfigPathInterface
 {
-    private const PATH_SEP = ".";
+    private const PATH_SEP = '.';
 
     private $scope;
 
@@ -24,7 +24,7 @@ final class ConfigPath implements ConfigPathInterface
     {
         $separatorPosition = strpos($path, $separator);
         if ($separatorPosition === 0) {
-            throw new \Exception("Initializing malformed ConfigPath: Path may not start with $separator.");
+            throw new \Exception('Initializing malformed ConfigPath: Path may not start with: '.$separator);
         }
         $pathParts = explode(self::PATH_SEP, $path);
         return new static(array_shift($pathParts), $pathParts, $separator);
@@ -65,7 +65,7 @@ final class ConfigPath implements ConfigPathInterface
     private function __construct(string $scope, array $parts, string $separator)
     {
         if (empty($scope)) {
-            throw new \Exception("Trying to create ConfigPath from empty scope.");
+            throw new \Exception('Trying to create ConfigPath from empty scope.');
         }
         $this->separator = $separator;
         $this->scope = $scope;

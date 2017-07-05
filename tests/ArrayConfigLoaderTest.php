@@ -16,12 +16,12 @@ use PHPUnit\Framework\TestCase;
 final class ArrayConfigLoaderTest extends TestCase
 {
     private const ARRAY_FIXTURE = [
-        "couchdb" => [
-            "host" => "127.0.0.1",
-            "port" => 5984,
-            "transport" => "https",
-            "user" => "couchdb",
-            "password" => "couchdb"
+        'couchdb' => [
+            'host' => '127.0.0.1',
+            'port' => 5984,
+            'transport' => 'https',
+            'user' => 'couchdb',
+            'password' => 'couchdb'
         ]
     ];
 

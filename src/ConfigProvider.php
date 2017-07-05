@@ -72,7 +72,7 @@ final class ConfigProvider implements ConfigProviderInterface
                 }
             }
             if (!is_array($value)) {
-                throw new \Exception("Trying to traverse non array-value with path: '".$path->getKey()."'");
+                throw new \Exception(sprintf('Trying to traverse non array-value with path: "%s"', $path->getKey()));
             }
             $value = &$value[$pathPart];
         }

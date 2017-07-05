@@ -16,59 +16,59 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderParamsTest extends TestCase
 {
-    private const LOCATIONS_FIXTURE = [ "location_one", "location_two" ];
+    private const LOCATIONS_FIXTURE = [ 'location_one', 'location_two' ];
 
     private const SOURCES_FIXTURE = [
-        "core" => [
-            "project_name" => "Generic Project",
-            "project_version" => "0.4.2"
+        'core' => [
+            'project_name' => 'Generic Project',
+            'project_version' => '0.4.2'
         ]
     ];
 
     public function testHasScope()
     {
         $provider = new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "sources" => self::SOURCES_FIXTURE
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => self::SOURCES_FIXTURE
             ]
         ]);
-        $this->assertTrue($provider->hasScope("settings"));
-        $this->assertFalse($provider->hasScope("foobar"));
+        $this->assertTrue($provider->hasScope('settings'));
+        $this->assertFalse($provider->hasScope('foobar'));
     }
 
     public function testGetLoader()
     {
         $provider = new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "sources" => self::SOURCES_FIXTURE
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => self::SOURCES_FIXTURE
             ]
         ]);
-        $this->assertInstanceOf(ArrayConfigLoader::class, $provider->getLoader("settings"));
+        $this->assertInstanceOf(ArrayConfigLoader::class, $provider->getLoader('settings'));
     }
 
     public function testGetSources()
     {
         $provider = new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "sources" => self::SOURCES_FIXTURE
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => self::SOURCES_FIXTURE
             ]
         ]);
-        $this->assertEquals(self::SOURCES_FIXTURE, $provider->getSources("settings"));
+        $this->assertEquals(self::SOURCES_FIXTURE, $provider->getSources('settings'));
     }
 
     public function testGetLocations()
     {
         $provider = new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "sources" => [],
-                "locations" => self::LOCATIONS_FIXTURE
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => [],
+                'locations' => self::LOCATIONS_FIXTURE
             ]
         ]);
-        $this->assertEquals(self::LOCATIONS_FIXTURE, $provider->getLocations("settings"));
+        $this->assertEquals(self::LOCATIONS_FIXTURE, $provider->getLocations('settings'));
     }
 
     /**
@@ -85,9 +85,9 @@ final class ConfigProviderParamsTest extends TestCase
     public function testMissingSources()
     {
         new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "locations" => []
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'locations' => []
             ]
         ]);
     }
@@ -98,9 +98,9 @@ final class ConfigProviderParamsTest extends TestCase
     public function testInvalidSources()
     {
         new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "sources" => "foobar"
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => 'foobar'
             ]
         ]);
     }
@@ -111,10 +111,10 @@ final class ConfigProviderParamsTest extends TestCase
     public function testInvalidLocations()
     {
         new ConfigProviderParams([
-            "settings" => [
-                "loader" => ArrayConfigLoader::class,
-                "sources" => [],
-                "locations" => "foobar"
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => [],
+                'locations' => 'foobar'
             ]
         ]);
     }
@@ -125,8 +125,8 @@ final class ConfigProviderParamsTest extends TestCase
     public function testMissingLoader()
     {
         new ConfigProviderParams([
-            "settings" => [
-                "sources" => []
+            'settings' => [
+                'sources' => []
             ]
         ]);
     }
@@ -137,9 +137,9 @@ final class ConfigProviderParamsTest extends TestCase
     public function testInvalidLoader()
     {
         new ConfigProviderParams([
-            "settings" => [
-                "loader" => "foobar",
-                "sources" => []
+            'settings' => [
+                'loader' => 'foobar',
+                'sources' => []
             ]
         ]);
     }
