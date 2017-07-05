@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Daikon\Test\Config;
 
 use Daikon\Config\ArrayConfigLoader;
+use Daikon\Config\ConfigLoaderInterface;
 use Daikon\Config\ConfigProvider;
 use Daikon\Config\ConfigProviderInterface;
 use Daikon\Config\ConfigProviderParams;
@@ -93,6 +94,46 @@ final class ConfigProviderTest extends TestCase
             ]
         ]));
         $this->assertEquals('c4ntgu35th15', $sut->get('settings.auth.simple.password'));
+    }
+
+    public function testLocationAndSourceInterpolation()
+    {
+        $loaderMock = $this->getMockBuilder(ConfigLoaderInterface::class)
+            ->setMethods([ 'load', 'serialize', 'deserialize' ])->getMock();
+        $loaderMock->expects($this->once())
+            ->method('load')->with(
+                $this->equalTo([ 'foo/dev/bar' ]),
+                $this->equalTo([ 'some_value.yaml' ])
+            );
+        $sut = new ConfigProvider(new ConfigProviderParams([
+            'settings' => [
+                'loader' => ArrayConfigLoader::class,
+                'sources' => [
+                    'project' => [ 'environment' => 'dev' ],
+                    'some_setting' => 'some_value'
+                ]
+            ],
+            'connections' => [
+                'loader' => $loaderMock,
+                'locations' => [ 'foo/${settings.project.environment}/bar' ],
+                'sources' => [ '${settings.some_setting}.yaml' ]
+            ]
+        ]));
+        $sut->get('connections');
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testInvalidSourceInterpolation()
+    {
+        $sut = new ConfigProvider(new ConfigProviderParams([
+            'settings' => [
+                'loader' => $this->createMock(ConfigLoaderInterface::class),
+                'sources' => [ 'foo/${settings.auth.name}/bar' ]
+            ]
+        ]));
+        $sut->get('settings');
     }
 
     public function provideSut()

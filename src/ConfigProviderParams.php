@@ -85,6 +85,9 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         if (!isset($params['loader'])) {
             throw new \Exception(sprintf('Missing required key "loader" within scope: "%s"', $scope));
         }
+        if ($params['loader'] instanceof ConfigLoaderInterface) {
+            return;
+        }
         if (!is_string($params['loader'])) {
             throw new \Exception(sprintf('The "loader" param within scope: "%s" must be a string(fqcn)', $scope));
         }

@@ -18,16 +18,25 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private $params;
 
+    private $preLoadInterpolations;
+
     public function __construct(ConfigProviderParamsInterface $params)
     {
         $this->params = $params;
         $this->config = [];
+        $this->preLoadInterpolations = [];
     }
 
     public function get(string $path, $default = null)
     {
         $configPath = ConfigPath::fromString($path);
         $scope = $configPath->getScope();
+        if (isset($this->preLoadInterpolations[$scope])) {
+            throw new \Exception(
+                'Recursive interpolations are not allowed when interpolating "locations" or "sources". '.
+                sprintf('Trying to recurse into scope: "%s"', $scope)
+            );
+        }
         if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
             $this->config[$scope] = $this->loadScope($scope);
         }
@@ -41,12 +50,17 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function loadScope(string $scope)
     {
-        $this->scopesBeingLoaded[$scope] = true;
-        $this->config[$scope] = $this->params->getLoader($scope)->load(
-            $this->params->getLocations($scope),
-            $this->params->getSources($scope)
-        );
-        unset($this->scopesBeingLoaded[$scope]);
+        $this->preLoadInterpolations[$scope] = true;
+        $locations = $this->params->getLocations($scope);
+        $sources = $this->params->getSources($scope);
+        $loader = $this->params->getLoader($scope);
+        if (!$loader instanceof ArrayConfigLoader) {
+            $sources = $this->interpolateConfigValues($sources);
+        }
+        $locations = $this->interpolateConfigValues($locations);
+        unset($this->preLoadInterpolations[$scope]);
+
+        $this->config[$scope] = $loader->load($locations, $sources);
         return $this->interpolateConfigValues($this->config[$scope]);
     }
 
@@ -72,7 +86,7 @@ final class ConfigProvider implements ConfigProviderInterface
                 }
             }
             if (!is_array($value)) {
-                throw new \Exception(sprintf('Trying to traverse non array-value with path: "%s"', $path->getKey()));
+                throw new \Exception(sprintf('Trying to traverse non array-value with path: "%s"', $path));
             }
             $value = &$value[$pathPart];
         }
