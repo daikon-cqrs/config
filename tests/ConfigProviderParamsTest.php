@@ -77,7 +77,7 @@ final class ConfigProviderParamsTest extends TestCase
     public function testEmptyParams()
     {
         new ConfigProviderParams([]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException \Assert\AssertionFailedException
@@ -90,7 +90,7 @@ final class ConfigProviderParamsTest extends TestCase
                 'locations' => []
             ]
         ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException \Assert\AssertionFailedException
@@ -103,7 +103,7 @@ final class ConfigProviderParamsTest extends TestCase
                 'sources' => 'foobar'
             ]
         ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException \Assert\AssertionFailedException
@@ -117,7 +117,7 @@ final class ConfigProviderParamsTest extends TestCase
                 'locations' => 'foobar'
             ]
         ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException \Assert\AssertionFailedException
@@ -129,7 +129,7 @@ final class ConfigProviderParamsTest extends TestCase
                 'sources' => []
             ]
         ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException \Assert\AssertionFailedException
@@ -142,5 +142,5 @@ final class ConfigProviderParamsTest extends TestCase
                 'sources' => []
             ]
         ]);
-    }
+    } // @codeCoverageIgnore
 }

@@ -57,7 +57,7 @@ final class ConfigPathTest extends TestCase
     public function testWithEmptyPath()
     {
         ConfigPath::fromString('');
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException \Assert\AssertionFailedException
@@ -65,5 +65,5 @@ final class ConfigPathTest extends TestCase
     public function testInvalidPathWithLeadingSeparator()
     {
         ConfigPath::fromString('.settings.core.app_version');
-    }
+    } // @codeCoverageIgnore
 }

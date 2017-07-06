@@ -134,7 +134,7 @@ final class ConfigProviderTest extends TestCase
             ]
         ]));
         $sut->get('settings');
-    }
+    } // @codeCoverageIgnore
 
     public function provideSut()
     {
