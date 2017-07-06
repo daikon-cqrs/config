@@ -136,6 +136,9 @@ final class ConfigProviderTest extends TestCase
         $sut->get('settings');
     } // @codeCoverageIgnore
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideSut()
     {
         $configProvider = new ConfigProvider(
