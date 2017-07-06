@@ -16,10 +16,13 @@ final class ConfigProvider implements ConfigProviderInterface
 {
     private const INTERPOLATION_PATTERN = '/(\$\{(.*?)\})/';
 
+    /** @var mixed[] */
     private $config;
 
+    /** @var ConfigProviderParamsInterface */
     private $params;
 
+    /** @var mixed[] */
     private $paramInterpolations;
 
     public function __construct(ConfigProviderParamsInterface $params)

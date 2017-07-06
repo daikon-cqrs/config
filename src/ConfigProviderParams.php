@@ -14,6 +14,7 @@ use Assert\Assertion;
 
 final class ConfigProviderParams implements ConfigProviderParamsInterface
 {
+    /** @var mixed[] */
     private $params;
 
     public function __construct(array $params)

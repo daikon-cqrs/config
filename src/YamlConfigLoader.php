@@ -14,6 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class YamlConfigLoader implements ConfigLoaderInterface
 {
+    /** @var Yaml */
     private $yamlParser;
 
     public function __construct(Yaml $yamlParser = null)

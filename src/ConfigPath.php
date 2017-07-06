@@ -16,10 +16,13 @@ final class ConfigPath implements ConfigPathInterface
 {
     private const PATH_SEP = '.';
 
+    /** @var string */
     private $scope;
 
+    /** @var string[]  */
     private $parts;
 
+    /** @var string  */
     private $separator;
 
     public static function fromString(string $path, string $separator = self::PATH_SEP): ConfigPathInterface
