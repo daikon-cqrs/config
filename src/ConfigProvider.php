@@ -82,10 +82,9 @@ final class ConfigProvider implements ConfigProviderInterface
             if (!isset($value[$pathPart])) {
                 if ($pathPos === $pathLen) {
                     return null;
-                } else {
-                    array_unshift($pathParts, $pathPart.$path->getSeparator().array_shift($pathParts));
-                    continue;
                 }
+                array_unshift($pathParts, $pathPart.$path->getSeparator().array_shift($pathParts));
+                continue;
             }
             Assertion::isArray($value, sprintf('Trying to traverse non array-value with path: "%s"', $path));
             $value = &$value[$pathPart];
