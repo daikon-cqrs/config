@@ -20,21 +20,21 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private $params;
 
-    private $preLoadInterpolations;
+    private $paramInterpolations;
 
     public function __construct(ConfigProviderParamsInterface $params)
     {
         $this->params = $params;
         $this->config = [];
-        $this->preLoadInterpolations = [];
+        $this->paramInterpolations = [];
     }
 
     public function get(string $path, $default = null)
     {
-        $configPath = ConfigPath::fromString($path);
-        $scope = $configPath->getScope();
+        $path = ConfigPath::fromString($path);
+        $scope = $path->getScope();
         Assertion::keyNotExists(
-            $this->preLoadInterpolations,
+            $this->paramInterpolations,
             $scope,
             'Recursive interpolations are not allowed when interpolating "locations" or "sources". '.
             sprintf('Trying to recurse into scope: "%s"', $scope)
@@ -44,7 +44,7 @@ final class ConfigProvider implements ConfigProviderInterface
         } elseif (!isset($this->config[$scope])) {
             return $default;
         }
-        return $this->resolvePath($configPath) ?? $default;
+        return $this->resolvePath($path) ?? $default;
     }
 
     public function has(string $path): bool
@@ -54,7 +54,7 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function loadScope(string $scope)
     {
-        $this->preLoadInterpolations[$scope] = true;
+        $this->paramInterpolations[$scope] = true;
         $locations = $this->params->getLocations($scope);
         $sources = $this->params->getSources($scope);
         $loader = $this->params->getLoader($scope);
@@ -62,7 +62,7 @@ final class ConfigProvider implements ConfigProviderInterface
             $sources = $this->interpolateConfigValues($sources);
         }
         $locations = $this->interpolateConfigValues($locations);
-        unset($this->preLoadInterpolations[$scope]);
+        unset($this->paramInterpolations[$scope]);
 
         $this->config[$scope] = $loader->load($locations, $sources);
         return $this->interpolateConfigValues($this->config[$scope]);
@@ -70,22 +70,22 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function resolvePath(ConfigPathInterface $path)
     {
-        $pathPos = 0;
-        $pathLen = $path->getLength();
-        $pathParts = $path->getParts();
+        $pos = 0;
+        $length = $path->getLength();
+        $parts = $path->getParts();
         $value = &$this->config[$path->getScope()];
-        while (!empty($pathParts)) {
-            $pathPos++;
-            $pathPart = array_shift($pathParts);
-            if (!isset($value[$pathPart])) {
-                if ($pathPos === $pathLen) {
+        while (!empty($parts)) {
+            $pos++;
+            $part = array_shift($parts);
+            if (!isset($value[$part])) {
+                if ($pos === $length) {
                     return null;
                 }
-                array_unshift($pathParts, $pathPart.$path->getSeparator().array_shift($pathParts));
+                array_unshift($parts, $part.$path->getSeparator().array_shift($parts));
                 continue;
             }
             Assertion::isArray($value, sprintf('Trying to traverse non array-value with path: "%s"', $path));
-            $value = &$value[$pathPart];
+            $value = &$value[$part];
         }
         return $value;
     }
