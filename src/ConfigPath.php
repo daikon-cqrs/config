@@ -24,12 +24,15 @@ final class ConfigPath implements ConfigPathInterface
 
     public static function fromString(string $path, string $separator = self::PATH_SEP): ConfigPathInterface
     {
+        $path = trim($path);
+        $separator = trim($separator);
+        Assertion::length($separator, 1, 'Path separator must be exactly one char long.');
         Assertion::notSame(
             0,
             strpos($path, $separator),
             'Initializing malformed ConfigPath: Path may not start with: '.$separator
         );
-        $pathParts = explode(self::PATH_SEP, $path);
+        $pathParts = explode($separator, $path);
         return new static(array_shift($pathParts), $pathParts, $separator);
     }
 
