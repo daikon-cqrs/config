@@ -92,17 +92,14 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function interpolateConfigValues(array $config): array
     {
-        foreach ($config as $key => $value) {
+        return array_map(function ($value) {
             if (is_array($value)) {
-                $config[$key] = $this->interpolateConfigValues($value);
-            } elseif (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
-                $replacements = [];
-                foreach ($matches[2] as $configKey) {
-                    $replacements[] = $this->get($configKey);
-                }
-                $config[$key] = str_replace($matches[0], $replacements, $value);
+                return $this->interpolateConfigValues($value);
             }
-        }
-        return $config;
+            if (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
+                return str_replace($matches[0], array_map([$this, "get"], $matches[2]), $value);
+            }
+            return $value;
+        }, $config);
     }
 }
