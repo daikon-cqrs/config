@@ -23,21 +23,22 @@ final class YamlConfigLoader implements ConfigLoaderInterface
 
     public function load(array $locations, array $sources): array
     {
-        $loadedConfigs = [];
-        foreach ($locations as $location) {
+        return array_reduce($locations, function (array $config, string $location) use ($sources): array {
             if (substr($location, -1) !== '/') {
                 $location .= '/';
             }
-            foreach ($sources as $source) {
-                $filepath = $location.$source;
-                if (is_readable($filepath)) {
-                    $loadedConfigs = array_replace_recursive(
-                        $loadedConfigs,
-                        $this->yamlParser->parse(file_get_contents($filepath))
-                    );
-                }
+            return array_replace_recursive($config, $this->loadSources($location, $sources));
+        }, []);
+    }
+
+    private function loadSources($location, array $sources)
+    {
+        return array_reduce($sources, function (array $config, string $source) use ($location): array {
+            $filepath = $location.$source;
+            if (is_readable($filepath)) {
+                return array_replace_recursive($config, $this->yamlParser->parse(file_get_contents($filepath)));
             }
-        }
-        return $loadedConfigs;
+            return $config;
+        }, []);
     }
 }
