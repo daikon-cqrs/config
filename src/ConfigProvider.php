@@ -41,6 +41,8 @@ final class ConfigProvider implements ConfigProviderInterface
         );
         if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
             $this->config[$scope] = $this->loadScope($scope);
+        } elseif (!isset($this->config[$scope])) {
+            return $default;
         }
         return $this->resolvePath($configPath) ?? $default;
     }
@@ -68,14 +70,10 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function resolvePath(ConfigPathInterface $path)
     {
-        $scope = $path->getScope();
-        if (!isset($this->config[$scope])) {
-            return null;
-        }
         $pathPos = 0;
         $pathLen = $path->getLength();
         $pathParts = $path->getParts();
-        $value = &$this->config[$scope];
+        $value = &$this->config[$path->getScope()];
         while (!empty($pathParts)) {
             $pathPos++;
             $pathPart = array_shift($pathParts);
