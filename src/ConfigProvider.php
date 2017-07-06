@@ -72,13 +72,13 @@ final class ConfigProvider implements ConfigProviderInterface
         if (!isset($this->config[$scope])) {
             return null;
         }
-        $value = &$this->config[$scope];
-        $pathParts = $path->getParts();
-        $pathLen = $path->getLength();
         $pathPos = 0;
+        $pathLen = $path->getLength();
+        $pathParts = $path->getParts();
+        $value = &$this->config[$scope];
         while (!empty($pathParts)) {
-            $pathPart = array_shift($pathParts);
             $pathPos++;
+            $pathPart = array_shift($pathParts);
             if (!isset($value[$pathPart])) {
                 if ($pathPos === $pathLen) {
                     return null;
