@@ -40,16 +40,4 @@ final class YamlConfigLoader implements ConfigLoaderInterface
         }
         return $loadedConfigs;
     }
-
-    public function serialize(array $config): string
-    {
-        // not implemented yet
-        return '';
-    }
-
-    public function deserialize(string $serializedConfig): array
-    {
-        // not implemented yet
-        return [];
-    }
 }

@@ -13,8 +13,4 @@ namespace Daikon\Config;
 interface ConfigLoaderInterface
 {
     public function load(array $locations, array $sources): array;
-
-    public function serialize(array $config): string;
-
-    public function deserialize(string $serializedConfig): array;
 }
