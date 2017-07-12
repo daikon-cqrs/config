@@ -12,10 +12,8 @@ branches:
   except:
     - gh-pages
 #    - legacy
-#    - experimental
 #  only:
 #  - master
-#  - stable
 #  - /^(?i:deploy)-.*$/
 
 env:
@@ -38,19 +36,6 @@ cache:
 # see https://docs.travis-ci.com/user/trusty-ci-environment (tl;dr: newer hhvm version)
 dist: trusty
 sudo: false
-#group: edge
-
-#addons:
-# see https://docs.travis-ci.com/user/customizing-the-build/#Custom-Hostnames
-#  hosts:
-#  - yourhostname.dev
-# see https://docs.travis-ci.com/user/installing-dependencies/#Installing-Packages-with-the-APT-Addon
-# apt:
-#   sources:
-#   - …
-#   packages:
-#   - …
-
 
 #before_install:
 #  - sudo apt-get update -qq
@@ -70,6 +55,8 @@ script:
 
 after_success:
   - travis_retry php vendor/bin/coveralls -v
+  - travis_retry wget https://scrutinizer-ci.com/ocular.phar
+  - travis_retry php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
 
 #after_failure:
 
