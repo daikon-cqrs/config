@@ -71,6 +71,11 @@ final class ConfigPath implements ConfigPathInterface
         return join(self::PATH_SEP, $pathParts);
     }
 
+    /**
+     * @param string $scope
+     * @param string[] $parts
+     * @param string $separator
+     */
     private function __construct(string $scope, array $parts, string $separator)
     {
         Assertion::notEmpty($scope, 'Trying to create ConfigPath from empty scope.');

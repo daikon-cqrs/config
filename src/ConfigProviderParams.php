@@ -14,9 +14,12 @@ use Assert\Assertion;
 
 final class ConfigProviderParams implements ConfigProviderParamsInterface
 {
-    /** @var mixed[] */
+    /** @var array<string, mixed> */
     private $params;
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function __construct(array $params)
     {
         $this->params = $this->verifyParams($params);
@@ -49,6 +52,10 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]['sources'];
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
     private function verifyParams(array $params): array
     {
         Assertion::notEmpty($params, 'Given params may not be empty.');
@@ -64,7 +71,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $params;
     }
 
-    private function checkLocations(string $scope, array $scopeParams)
+    private function checkLocations(string $scope, array $scopeParams): void
     {
         Assertion::isArray(
             $scopeParams['locations'],
@@ -72,7 +79,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         );
     }
 
-    private function checkSources(string $scope, array $params)
+    private function checkSources(string $scope, array $params): void
     {
         Assertion::keyIsset($params, 'sources', sprintf('Missing required key "sources" within scope: "%s"', $scope));
         Assertion::isArray(
@@ -81,7 +88,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         );
     }
 
-    private function checkLoader(string $scope, array $params)
+    private function checkLoader(string $scope, array $params): void
     {
         Assertion::keyIsset($params, 'loader', sprintf('Missing required key "loader" within scope: "%s"', $scope));
         if ($params['loader'] instanceof ConfigLoaderInterface) {
@@ -107,7 +114,7 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         );
     }
 
-    private function assertScopeExists(string $scope)
+    private function assertScopeExists(string $scope): void
     {
         Assertion::true($this->hasScope($scope), sprintf('Given scope: "%s" has not been registered.', $scope));
     }

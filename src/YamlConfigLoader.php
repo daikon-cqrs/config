@@ -32,12 +32,12 @@ final class YamlConfigLoader implements ConfigLoaderInterface
         }, []);
     }
 
-    private function loadSources($location, array $sources)
+    private function loadSources($location, array $sources): array
     {
         return array_reduce($sources, function (array $config, string $source) use ($location): array {
             $filepath = $location.$source;
-            if (is_readable($filepath)) {
-                return array_replace_recursive($config, $this->yamlParser->parse(file_get_contents($filepath)));
+            if (is_readable($filepath) && false !== ($content = file_get_contents($filepath))) {
+                return array_replace_recursive($config, $this->yamlParser->parse($content));
             }
             return $config;
         }, []);

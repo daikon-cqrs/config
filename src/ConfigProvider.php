@@ -32,6 +32,9 @@ final class ConfigProvider implements ConfigProviderInterface
         $this->paramInterpolations = [];
     }
 
+    /**
+     * @return mixed|null
+     */
     public function get(string $path, $default = null)
     {
         $path = ConfigPath::fromString($path);
@@ -55,7 +58,7 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->get($path) !== null;
     }
 
-    private function loadScope(string $scope)
+    private function loadScope(string $scope): array
     {
         $this->paramInterpolations[$scope] = true;
         $locations = $this->params->getLocations($scope);
@@ -71,6 +74,9 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->interpolateConfigValues($this->config[$scope]);
     }
 
+    /**
+     * @return mixed|null
+     */
     private function resolvePath(ConfigPathInterface $path)
     {
         $pos = 0;
@@ -95,14 +101,18 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function interpolateConfigValues(array $config): array
     {
-        return array_map(function ($value) {
-            if (is_array($value)) {
-                return $this->interpolateConfigValues($value);
-            }
-            if (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
-                return str_replace($matches[0], array_map([$this, "get"], $matches[2]), $value);
-            }
-            return $value;
-        }, $config);
+        return array_map(
+            /** @return mixed */
+            function ($value) {
+                if (is_array($value)) {
+                    return $this->interpolateConfigValues($value);
+                }
+                if (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
+                    return str_replace($matches[0], array_map([$this, "get"], $matches[2]), $value);
+                }
+                return $value;
+            },
+            $config
+        );
     }
 }
