@@ -33,6 +33,8 @@ final class ConfigProvider implements ConfigProviderInterface
     }
 
     /**
+     * @param string $path
+     * @param mixed|null $default
      * @return mixed|null
      */
     public function get(string $path, $default = null)
@@ -50,7 +52,11 @@ final class ConfigProvider implements ConfigProviderInterface
         } elseif (!isset($this->config[$scope])) {
             return $default;
         }
-        return $this->resolvePath($path) ?? $default;
+        return $this->resolvePath(
+            $path->getParts(),
+            $this->config[$path->getScope()],
+            $path->getSeparator()
+        ) ?? $default;
     }
 
     public function has(string $path): bool
@@ -75,28 +81,47 @@ final class ConfigProvider implements ConfigProviderInterface
     }
 
     /**
+     * @param array $parts
+     * @param mixed[] $values
+     * @param string $separator
      * @return mixed|null
      */
-    private function resolvePath(ConfigPathInterface $path)
+    private function resolvePath(array $parts, array $values, string $separator)
     {
         $pos = 0;
-        $length = $path->getLength();
-        $parts = $path->getParts();
-        $value = &$this->config[$path->getScope()];
+        $length = count($parts);
+        $value = &$values;
         while (!empty($parts)) {
             $pos++;
             $part = array_shift($parts);
+            if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
+                return $this->expandWildcard($parts, $value, $separator);
+            }
             if (!isset($value[$part])) {
                 if ($pos === $length) {
                     return null;
                 }
-                array_unshift($parts, $part.$path->getSeparator().array_shift($parts));
+                array_unshift($parts, $part.$separator.array_shift($parts));
                 continue;
             }
-            Assertion::isArray($value, sprintf('Trying to traverse non array-value with path: "%s"', $path));
+            Assertion::isArray(
+                $value,
+                sprintf('Trying to traverse non array-value with pathpart: "%s"', join($separator, $parts))
+            );
             $value = &$value[$part];
         }
         return $value;
+    }
+
+    private function expandWildcard(array $parts, array $values, string $separator)
+    {
+        return array_merge(...array_reduce($values, function ($expanded, $value) use ($parts, $separator): array {
+            $expandedValue = $this->resolvePath($parts, $value, $separator);
+            if (!is_null($expandedValue)) {
+                $expanded[] =  (array)$expandedValue;
+            }
+            return $expanded;
+        }, []));
     }
 
     private function interpolateConfigValues(array $config): array

@@ -12,6 +12,8 @@ namespace Daikon\Config;
 
 interface ConfigPathInterface
 {
+    public const WILDCARD_TOKEN = '*';
+
     public static function fromString(string $path, string $separator): ConfigPathInterface;
 
     public function getScope(): string;

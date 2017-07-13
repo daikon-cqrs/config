@@ -15,7 +15,6 @@ use Daikon\Config\ConfigLoaderInterface;
 use Daikon\Config\ConfigProvider;
 use Daikon\Config\ConfigProviderInterface;
 use Daikon\Config\ConfigProviderParams;
-use Daikon\Config\ConfigProviderParamsInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
@@ -29,11 +28,16 @@ final class ConfigProviderTest extends TestCase
                 'username' => 'superuser',
                 'password' => 'p455w0rd'
             ]
+        ],
+        'labels' => [
+            'foo' => [ 'label' => [ 'snafu' => [ 'value' => 'hello'] ] ],
+            'bar' => [ 'label' => [ 'fnord' => [ 'value' => 'eris' ] ] ]
         ]
     ];
 
     /**
      * @dataProvider provideSut
+     * @param ConfigProviderInterface $sut
      */
     public function testHas(ConfigProviderInterface $sut)
     {
@@ -49,6 +53,7 @@ final class ConfigProviderTest extends TestCase
 
     /**
      * @dataProvider provideSut
+     * @param ConfigProviderInterface $sut
      */
     public function testGet(ConfigProviderInterface $sut)
     {
@@ -67,6 +72,16 @@ final class ConfigProviderTest extends TestCase
 
     /**
      * @dataProvider provideSut
+     * @param ConfigProviderInterface $sut
+     */
+    public function testGetWildcardExpansion(ConfigProviderInterface $sut)
+    {
+        $this->assertEquals([ 'hello', 'eris' ], $sut->get('settings.labels.*.label.*.value'));
+    }
+
+    /**
+     * @dataProvider provideSut
+     * @param ConfigProviderInterface $sut
      */
     public function testGetWithDefault(ConfigProviderInterface $sut)
     {
