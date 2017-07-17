@@ -94,20 +94,20 @@ final class ConfigProvider implements ConfigProviderInterface
         while (!empty($parts)) {
             $pos++;
             $part = array_shift($parts);
-            if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
-                return $this->expandWildcard($parts, $value, $separator);
-            }
-            if (!isset($value[$part])) {
-                if ($pos === $length) {
-                    return null;
-                }
-                array_unshift($parts, $part.$separator.array_shift($parts));
-                continue;
-            }
             Assertion::isArray(
                 $value,
                 sprintf('Trying to traverse non array-value with pathpart: "%s"', join($separator, $parts))
             );
+            if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
+                return $this->expandWildcard($parts, $value, $separator);
+            }
+            if (!isset($value[$part]) && $pos === $length) {
+                return null;
+            }
+            if (!isset($value[$part])) {
+                array_unshift($parts, $part.$separator.array_shift($parts));
+                continue;
+            }
             $value = &$value[$part];
         }
         return $value;

@@ -47,12 +47,10 @@
         "test": "phpunit --no-coverage",
         "tests": "phpunit",
         "sniff": [
-            "@code-sniffer-autofix",
             "@code-sniffer",
             "@copy-paste-detector",
             "@validate-json"
         ],
-        "code-sniffer-autofix": "phpcbf --standard=PSR2 -d tabWidth=4 src/ tests/",
         "code-sniffer": "phpcs -p -s --extensions=php --standard='PSR1,PSR2' src/ tests/",
         "copy-paste-detector": "phpcpd src/ tests/",
         "validate-json": "composer validate --no-check-all --no-check-lock",
