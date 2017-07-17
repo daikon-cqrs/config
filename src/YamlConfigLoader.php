@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Daikon\Config;
 
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 
 final class YamlConfigLoader implements ConfigLoaderInterface
@@ -17,27 +19,38 @@ final class YamlConfigLoader implements ConfigLoaderInterface
     /** @var Yaml */
     private $yamlParser;
 
+    /** @var Finder */
+    private $finder;
+
     public function __construct(Yaml $yamlParser = null)
     {
         $this->yamlParser = $yamlParser ?? new Yaml;
+        $this->finder = $finder ?? new Finder;
     }
 
+    /**
+     * @param string[] $locations
+     * @param string[] $sources
+     * @return mixed[]
+     */
     public function load(array $locations, array $sources): array
     {
-        return array_reduce($locations, function (array $config, string $location) use ($sources): array {
-            if (substr($location, -1) !== '/') {
-                $location .= '/';
-            }
+        return array_reduce($locations, function (array $config, $location) use ($sources): array {
             return array_replace_recursive($config, $this->loadSources($location, $sources));
         }, []);
     }
 
+    /**
+     * @param string|string[] $location
+     * @param string[] $sources
+     * @return mixed[]
+     */
     private function loadSources($location, array $sources): array
     {
         return array_reduce($sources, function (array $config, string $source) use ($location): array {
-            $filepath = $location.$source;
-            if (is_readable($filepath) && false !== ($content = file_get_contents($filepath))) {
-                return array_replace_recursive($config, $this->yamlParser->parse($content));
+            /** @var $file SplFileInfo */
+            foreach ($this->finder->files()->in($location)->name($source) as $file) {
+                $config = array_replace_recursive($config, $this->yamlParser->parse($file->getContents()));
             }
             return $config;
         }, []);

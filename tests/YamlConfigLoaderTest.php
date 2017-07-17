@@ -28,7 +28,7 @@ final class YamlConfigLoaderTest extends TestCase
     {
         $yamlLoader = new YamlConfigLoader;
         $locations = [ __DIR__.'/Fixture/YamlConfigLoader' ];
-        $sources = [ 'fixture.yml', 'fixture_override.yml' ];
+        $sources = [ 'fixture*.yml' ];
         $expecation = require __DIR__.'/Fixture/YamlConfigLoader/load_cascaded_expectation.php';
         $this->assertEquals($expecation, $yamlLoader->load($locations, $sources));
     }
