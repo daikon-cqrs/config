@@ -134,7 +134,7 @@ final class ConfigProvider implements ConfigProviderInterface
                 if (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
                     $interpolatedValues = array_map([$this, "get"], $matches[2]);
                     return array_filter($interpolatedValues, 'is_string') === $interpolatedValues
-                        ? str_replace($matches[0], array_map([$this, "get"], $matches[2]), $value)
+                        ? str_replace($matches[0], $interpolatedValues, $value)
                         : $interpolatedValues[0];
                 }
                 return $value;
