@@ -103,8 +103,7 @@ final class ConfigProvider implements ConfigProviderInterface
             }
             if (!isset($value[$part]) && $pos === $length) {
                 return null;
-            }
-            if (!isset($value[$part])) {
+            } elseif (!isset($value[$part])) {
                 array_unshift($parts, $part.$separator.array_shift($parts));
                 continue;
             }
