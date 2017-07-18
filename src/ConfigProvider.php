@@ -132,14 +132,19 @@ final class ConfigProvider implements ConfigProviderInterface
                     return $this->interpolateConfigValues($value);
                 }
                 if (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
-                    $interpolatedValues = array_map([$this, "get"], $matches[2]);
-                    return array_filter($interpolatedValues, 'is_string') === $interpolatedValues
-                        ? str_replace($matches[0], $interpolatedValues, $value)
-                        : $interpolatedValues[0];
+                    return $this->interpolateConfigValue($value, $matches[0], $matches[2]);
                 }
                 return $value;
             },
             $config
         );
+    }
+
+    private function interpolateConfigValue(string $value, array $valueParts, array $interpolations)
+    {
+        $interpolatedValues = array_map([$this, "get"], $interpolations);
+        return array_filter($interpolatedValues, 'is_string') === $interpolatedValues
+            ? str_replace($valueParts, $interpolatedValues, $value)
+            : $interpolatedValues[0];
     }
 }

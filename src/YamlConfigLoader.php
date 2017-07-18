@@ -49,7 +49,7 @@ final class YamlConfigLoader implements ConfigLoaderInterface
     {
         return array_reduce($sources, function (array $config, string $source) use ($location): array {
             /** @var $file SplFileInfo */
-            foreach ($this->finder->files()->in($location)->name($source)->sortByName() as $file) {
+            foreach ($this->finder->create()->files()->in($location)->name($source)->sortByName() as $file) {
                 $config = array_replace_recursive($config, $this->yamlParser->parse($file->getContents()));
             }
             return $config;
