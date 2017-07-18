@@ -100,8 +100,7 @@ final class ConfigProvider implements ConfigProviderInterface
             );
             if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
                 return $this->expandWildcard($parts, $value, $separator);
-            }
-            if (!isset($value[$part]) && $pos === $length) {
+            } elseif (!isset($value[$part]) && $pos === $length) {
                 return null;
             } elseif (!isset($value[$part])) {
                 array_unshift($parts, $part.$separator.array_shift($parts));
@@ -130,8 +129,7 @@ final class ConfigProvider implements ConfigProviderInterface
             function ($value) {
                 if (is_array($value)) {
                     return $this->interpolateConfigValues($value);
-                }
-                if (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
+                } elseif (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
                     return $this->interpolateConfigValue($value, $matches[0], $matches[2]);
                 }
                 return $value;
