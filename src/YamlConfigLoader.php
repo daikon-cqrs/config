@@ -29,15 +29,24 @@ final class YamlConfigLoader implements ConfigLoaderInterface
     }
 
     /**
-     * @param string[] $locations
-     * @param string[] $sources
+     * @param array $locations
+     * @param array $sources
      * @return mixed[]
      */
     public function load(array $locations, array $sources): array
     {
-        return array_reduce($locations, function (array $config, $location) use ($sources): array {
-            return array_replace_recursive($config, $this->loadSources($location, $sources));
-        }, []);
+        return array_reduce(
+            $locations,
+            /**
+             * @param array $config
+             * @param string|string[] $location
+             * @return array
+             */
+            function (array $config, $location) use ($sources): array {
+                return array_replace_recursive($config, $this->loadSources($location, $sources));
+            },
+            []
+        );
     }
 
     /**
@@ -48,7 +57,6 @@ final class YamlConfigLoader implements ConfigLoaderInterface
     private function loadSources($location, array $sources): array
     {
         return array_reduce($sources, function (array $config, string $source) use ($location): array {
-            /** @var $file SplFileInfo */
             foreach ($this->finder->create()->files()->in($location)->name($source)->sortByName() as $file) {
                 $config = array_replace_recursive($config, $this->yamlParser->parse($file->getContents()));
             }

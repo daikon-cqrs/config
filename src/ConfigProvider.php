@@ -52,7 +52,7 @@ final class ConfigProvider implements ConfigProviderInterface
         } elseif (!isset($this->config[$scope])) {
             return $default;
         }
-        return $this->resolvePath(
+        return $this->evaluatePath(
             $path->getParts(),
             $this->config[$path->getScope()],
             $path->getSeparator()
@@ -86,7 +86,7 @@ final class ConfigProvider implements ConfigProviderInterface
      * @param string $separator
      * @return mixed|null
      */
-    private function resolvePath(array $parts, array $values, string $separator)
+    private function evaluatePath(array $parts, array $values, string $separator)
     {
         $pos = 0;
         $length = count($parts);
@@ -111,33 +111,46 @@ final class ConfigProvider implements ConfigProviderInterface
         return $value;
     }
 
-    private function expandWildcard(array $parts, array $values, string $separator)
+    private function expandWildcard(array $parts, array $context, string $separator): array
     {
-        return array_merge(...array_reduce($values, function ($expanded, $value) use ($parts, $separator): array {
-            $expandedValue = $this->resolvePath($parts, $value, $separator);
-            if (!is_null($expandedValue)) {
-                $expanded[] =  (array)$expandedValue;
-            }
-            return $expanded;
-        }, []));
+        return array_merge(...array_reduce(
+            $context,
+            function (array $collected, array $ctx) use ($parts, $separator): array {
+                $expandedValue = $this->evaluatePath($parts, $ctx, $separator);
+                if (!is_null($expandedValue)) {
+                    $collected[] =  (array)$expandedValue;
+                }
+                return $collected;
+            },
+            []
+        ));
     }
 
     private function interpolateConfigValues(array $config): array
     {
-        return array_map(
-            /** @return mixed */
-            function ($value) {
-                if (is_array($value)) {
-                    return $this->interpolateConfigValues($value);
-                } elseif (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
-                    return $this->interpolateConfigValue($value, $matches[0], $matches[2]);
-                }
-                return $value;
-            },
-            $config
-        );
+        return array_map([$this, "mapInterpolation"], $config);
     }
 
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    private function mapInterpolation($value)
+    {
+        if (is_array($value)) {
+            return $this->interpolateConfigValues($value);
+        } elseif (is_string($value) && preg_match_all(self::INTERPOLATION_PATTERN, $value, $matches)) {
+            return $this->interpolateConfigValue($value, $matches[0], $matches[2]);
+        }
+        return $value;
+    }
+
+    /**
+     * @param string $value
+     * @param array $valueParts
+     * @param array $interpolations
+     * @return mixed
+     */
     private function interpolateConfigValue(string $value, array $valueParts, array $interpolations)
     {
         $interpolatedValues = array_map([$this, "get"], $interpolations);
