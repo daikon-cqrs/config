@@ -64,6 +64,21 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->get($path) !== null;
     }
 
+    /**
+     * @param string $path
+     * @param mixed $default
+     * @return mixed
+     * @throws RuntimeException When config value does not exist and no default was provided.
+     */
+    public function __invoke(string $path, $default = null)
+    {
+        $value = $this->get($path, $default);
+        if (is_null($value) && is_null($default)) {
+            throw new \RuntimeException("Missing required config value at path/key: $path");
+        }
+        return $value;
+    }
+
     private function loadScope(string $scope): array
     {
         $this->paramInterpolations[$scope] = true;
