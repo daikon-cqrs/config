@@ -103,6 +103,9 @@ final class ConfigProvider implements ConfigProviderInterface
      */
     private function evaluatePath(array $parts, array $values, string $separator)
     {
+        if (empty($values)) {
+            return null;
+        }
         $pos = 0;
         $length = count($parts);
         $value = &$values;
