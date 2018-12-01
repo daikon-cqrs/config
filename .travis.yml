@@ -53,8 +53,8 @@ before_script:
 script:
   - composer build
 
-after_success:
-  - travis_retry php vendor/bin/coveralls -v
+#after_success:
+#  - travis_retry php vendor/bin/coveralls -v
 
 #after_failure:
 
