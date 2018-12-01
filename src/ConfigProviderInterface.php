@@ -15,4 +15,6 @@ interface ConfigProviderInterface
     public function get(string $path, $default = null);
 
     public function has(string $path): bool;
+
+    public function __invoke(string $path, $default = null);
 }
