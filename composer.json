@@ -5,15 +5,13 @@
     "keywords": [ "config" ],
     "homepage": "https://github.com/daikon-cqrs/config",
     "license": "MPL-2.0",
-    "support": {
-        "issues": "https://github.com/daikon-cqrs/config/issues"
-    },
     "prefer-stable": true,
+    "minimum-stability": "dev",
     "require": {
-        "php": "^7.2",
-        "symfony/finder": "^4.1",
-        "symfony/yaml": "^4.1",
-        "beberlei/assert": "^3.0"
+        "php": "^7.1",
+        "symfony/finder": "^3.0|^4.1",
+        "symfony/yaml": "^3.0|^4.1",
+        "beberlei/assert": "^2.7|^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",
