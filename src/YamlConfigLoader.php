@@ -56,7 +56,7 @@ final class YamlConfigLoader implements ConfigLoaderInterface
      */
     private function loadSources($location, array $sources): array
     {
-        if (empty($location) || !is_dir($location) || empty($sources)) {
+        if (empty($location) || empty($sources)) {
             return [];
         }
         return array_reduce($sources, function (array $config, string $source) use ($location): array {
