@@ -1,4 +1,4 @@
-# config
+# Config
 
 [![Build Status](https://scrutinizer-ci.com/g/daikon-cqrs/config/badges/build.png?b=master)](https://scrutinizer-ci.com/g/daikon-cqrs/config/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/daikon-cqrs/config/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/daikon-cqrs/config/?branch=master)
