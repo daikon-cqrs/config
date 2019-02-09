@@ -56,11 +56,20 @@ final class YamlConfigLoader implements ConfigLoaderInterface
      */
     private function loadSources($location, array $sources): array
     {
+        $location = array_filter((array) $location, 'is_dir');
+
         if (empty($location) || empty($sources)) {
             return [];
         }
+
         return array_reduce($sources, function (array $config, string $source) use ($location): array {
-            foreach ($this->finder->create()->files()->in($location)->name($source)->sortByName() as $file) {
+            foreach ($this->finder
+                ->create()
+                ->files()
+                ->ignoreUnreadableDirs()
+                ->in($location)
+                ->name($source)
+                ->sortByName() as $file) {
                 $config = array_replace_recursive($config, $this->yamlParser->parse($file->getContents()) ?? []);
             }
             return $config;
