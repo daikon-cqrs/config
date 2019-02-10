@@ -70,7 +70,9 @@ final class YamlConfigLoader implements ConfigLoaderInterface
                 ->in($location)
                 ->name($source)
                 ->sortByName() as $file) {
-                $config = array_replace_recursive($config, $this->yamlParser->parse($file->getContents()) ?? []);
+                if ($file->isReadable()) {
+                    $config = array_replace_recursive($config, $this->yamlParser->parse($file->getContents()) ?? []);
+                };
             }
             return $config;
         }, []);
