@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Daikon\Test\Config;
 
+use Assert\AssertionFailedException;
 use Daikon\Config\ArrayConfigLoader;
 use Daikon\Config\ConfigLoaderInterface;
 use Daikon\Config\ConfigProvider;
@@ -137,11 +138,9 @@ final class ConfigProviderTest extends TestCase
         $sut->get('connections');
     }
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testInvalidSourceInterpolation()
     {
+        $this->expectException(AssertionFailedException::class);
         $sut = new ConfigProvider(new ConfigProviderParams([
             'settings' => [
                 'loader' => $this->createMock(ConfigLoaderInterface::class),

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Daikon\Test\Config;
 
+use Assert\AssertionFailedException;
 use Daikon\Config\ArrayConfigLoader;
 use Daikon\Config\ConfigProviderParams;
 use PHPUnit\Framework\TestCase;
@@ -71,19 +72,15 @@ final class ConfigProviderParamsTest extends TestCase
         $this->assertEquals(self::LOCATIONS_FIXTURE, $provider->getLocations('settings'));
     }
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testEmptyParams()
     {
+        $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([]);
     } // @codeCoverageIgnore
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testMissingSources()
     {
+        $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
             'settings' => [
                 'loader' => ArrayConfigLoader::class,
@@ -92,11 +89,9 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testInvalidSources()
     {
+        $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
             'settings' => [
                 'loader' => ArrayConfigLoader::class,
@@ -105,11 +100,9 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testInvalidLocations()
     {
+        $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
             'settings' => [
                 'loader' => ArrayConfigLoader::class,
@@ -119,11 +112,9 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testMissingLoader()
     {
+        $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
             'settings' => [
                 'sources' => []
@@ -131,11 +122,9 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testInvalidLoader()
     {
+        $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
             'settings' => [
                 'loader' => 'foobar',

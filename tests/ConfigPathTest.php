@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Daikon\Test\Config;
 
+use Assert\AssertionFailedException;
 use Daikon\Config\ConfigPath;
 use PHPUnit\Framework\TestCase;
 
@@ -51,19 +52,15 @@ final class ConfigPathTest extends TestCase
         $this->assertEquals('settings.core.app_version', (string)$configPath);
     }
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testWithEmptyPath()
     {
+        $this->expectException(AssertionFailedException::class);
         ConfigPath::fromString('');
     } // @codeCoverageIgnore
 
-    /**
-     * @expectedException \Assert\AssertionFailedException
-     */
     public function testInvalidPathWithLeadingSeparator()
     {
+        $this->expectException(AssertionFailedException::class);
         ConfigPath::fromString('.settings.core.app_version');
     } // @codeCoverageIgnore
 }

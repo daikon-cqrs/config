@@ -12,6 +12,7 @@ namespace Daikon\Config;
 
 interface ConfigProviderInterface
 {
+    /** @return mixed */
     public function get(string $path, $default = null);
 
     public function has(string $path): bool;
