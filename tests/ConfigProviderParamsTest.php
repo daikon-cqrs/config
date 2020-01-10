@@ -1,12 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Daikon\Test\Config;
 
@@ -17,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderParamsTest extends TestCase
 {
-    private const LOCATIONS_FIXTURE = [ 'location_one', 'location_two' ];
+    private const LOCATIONS_FIXTURE = ['location_one', 'location_two'];
 
     private const SOURCES_FIXTURE = [
         'core' => [

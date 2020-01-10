@@ -1,12 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Daikon\Config;
 
@@ -16,16 +14,13 @@ final class ConfigPath implements ConfigPathInterface
 {
     private const PATH_SEP = '.';
 
-    /** @var string */
-    private $scope;
+    private string $scope;
 
-    /** @var string[]  */
-    private $parts;
+    private array $parts;
 
-    /** @var string  */
-    private $separator;
+    private string $separator;
 
-    public static function fromString(string $path, string $separator = self::PATH_SEP): ConfigPathInterface
+    public static function fromString(string $path, string $separator = self::PATH_SEP): self
     {
         $path = trim($path);
         $separator = trim($separator);
@@ -71,11 +66,6 @@ final class ConfigPath implements ConfigPathInterface
         return join(self::PATH_SEP, $pathParts);
     }
 
-    /**
-     * @param string $scope
-     * @param string[] $parts
-     * @param string $separator
-     */
     private function __construct(string $scope, array $parts, string $separator)
     {
         Assertion::notEmpty($scope, 'Trying to create ConfigPath from empty scope.');

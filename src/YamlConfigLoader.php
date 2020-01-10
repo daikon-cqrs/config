@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
@@ -6,42 +6,28 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Daikon\Config;
 
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 
 final class YamlConfigLoader implements ConfigLoaderInterface
 {
-    /** @var Yaml */
-    private $yamlParser;
+    private Yaml $yamlParser;
 
-    /** @var Finder */
-    private $finder;
+    private Finder $finder;
 
-    public function __construct(Yaml $yamlParser = null)
+    public function __construct(Yaml $yamlParser = null, Finder $finder = null)
     {
         $this->yamlParser = $yamlParser ?? new Yaml;
         $this->finder = $finder ?? new Finder;
     }
 
-    /**
-     * @param array $locations
-     * @param array $sources
-     * @return mixed[]
-     */
     public function load(array $locations, array $sources): array
     {
         return array_reduce(
             $locations,
-            /**
-             * @param array $config
-             * @param string|string[] $location
-             * @return array
-             */
+            /** @param string|string[] $location */
             function (array $config, $location) use ($sources): array {
                 return array_replace_recursive($config, $this->loadSources($location, $sources));
             },
@@ -49,14 +35,10 @@ final class YamlConfigLoader implements ConfigLoaderInterface
         );
     }
 
-    /**
-     * @param string|string[] $location
-     * @param string[] $sources
-     * @return mixed[]
-     */
+    /** @param string|string[] $location */
     private function loadSources($location, array $sources): array
     {
-        $location = array_filter((array) $location, 'is_dir');
+        $location = array_filter((array)$location, 'is_dir');
 
         if (empty($location) || empty($sources)) {
             return [];

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
@@ -6,20 +6,14 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Daikon\Config;
 
 use Assert\Assertion;
 
 final class ConfigProviderParams implements ConfigProviderParamsInterface
 {
-    /** @var array<string, mixed> */
-    private $params;
+    private array $params;
 
-    /**
-     * @param array<string, mixed> $params
-     */
     public function __construct(array $params)
     {
         $this->params = $this->verifyParams($params);
@@ -52,10 +46,6 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $this->params[$scope]['sources'];
     }
 
-    /**
-     * @param array<string, mixed> $params
-     * @return array<string, mixed>
-     */
     private function verifyParams(array $params): array
     {
         Assertion::notEmpty($params, 'Given params may not be empty.');

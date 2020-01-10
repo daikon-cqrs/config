@@ -1,12 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Daikon\Config;
 
@@ -16,14 +14,11 @@ final class ConfigProvider implements ConfigProviderInterface
 {
     private const INTERPOLATION_PATTERN = '/(\$\{(.*?)\})/';
 
-    /** @var mixed[] */
-    private $config;
+    private array $config;
 
-    /** @var ConfigProviderParamsInterface */
-    private $params;
+    private ConfigProviderParamsInterface $params;
 
-    /** @var mixed[] */
-    private $paramInterpolations;
+    private array $paramInterpolations;
 
     public function __construct(ConfigProviderParamsInterface $params)
     {
@@ -32,11 +27,6 @@ final class ConfigProvider implements ConfigProviderInterface
         $this->paramInterpolations = [];
     }
 
-    /**
-     * @param string $path
-     * @param mixed|null $default
-     * @return mixed|null
-     */
     public function get(string $path, $default = null)
     {
         $path = ConfigPath::fromString($path);
@@ -64,12 +54,7 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->get($path) !== null;
     }
 
-    /**
-     * @param string $path
-     * @param mixed $default
-     * @return mixed
-     * @throws RuntimeException When config value does not exist and no default was provided.
-     */
+
     public function __invoke(string $path, $default = null)
     {
         $value = $this->get($path, $default);
@@ -95,12 +80,7 @@ final class ConfigProvider implements ConfigProviderInterface
         return $this->interpolateConfigValues($this->config[$scope]);
     }
 
-    /**
-     * @param array $parts
-     * @param mixed[] $values
-     * @param string $separator
-     * @return mixed|null
-     */
+    /** @return mixed */
     private function evaluatePath(array $parts, array $values, string $separator)
     {
         if (empty($values)) {
@@ -163,12 +143,7 @@ final class ConfigProvider implements ConfigProviderInterface
         return $value;
     }
 
-    /**
-     * @param string $value
-     * @param array $valueParts
-     * @param array $interpolations
-     * @return mixed
-     */
+    /** @return mixed */
     private function interpolateConfigValue(string $value, array $valueParts, array $interpolations)
     {
         $interpolatedValues = array_map([$this, "get"], $interpolations);

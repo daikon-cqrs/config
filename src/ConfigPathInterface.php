@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
@@ -6,15 +6,13 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Daikon\Config;
 
 interface ConfigPathInterface
 {
     public const WILDCARD_TOKEN = '*';
 
-    public static function fromString(string $path, string $separator): ConfigPathInterface;
+    public static function fromString(string $path, string $separator): self;
 
     public function getScope(): string;
 

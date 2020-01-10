@@ -1,12 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Daikon\Test\Config;
 
@@ -31,8 +29,8 @@ final class ConfigProviderTest extends TestCase
             ]
         ],
         'labels' => [
-            'foo' => [ 'label' => [ 'snafu' => [ 'value' => 'hello'] ] ],
-            'bar' => [ 'label' => [ 'fnord' => [ 'value' => 'eris' ] ] ]
+            'foo' => ['label' => ['snafu' => ['value' => 'hello']]],
+            'bar' => ['label' => ['fnord' => ['value' => 'eris' ]]]
         ]
     ];
 
@@ -77,7 +75,7 @@ final class ConfigProviderTest extends TestCase
      */
     public function testGetWildcardExpansion(ConfigProviderInterface $sut)
     {
-        $this->assertEquals([ 'hello', 'eris' ], $sut->get('settings.labels.*.label.*.value'));
+        $this->assertEquals(['hello', 'eris'], $sut->get('settings.labels.*.label.*.value'));
     }
 
     /**
@@ -115,24 +113,24 @@ final class ConfigProviderTest extends TestCase
     public function testLocationAndSourceInterpolation()
     {
         $loaderMock = $this->getMockBuilder(ConfigLoaderInterface::class)
-            ->setMethods([ 'load', 'serialize', 'deserialize' ])->getMock();
+            ->setMethods(['load', 'serialize', 'deserialize'])->getMock();
         $loaderMock->expects($this->once())
             ->method('load')->with(
-                $this->equalTo([ 'foo/dev/bar' ]),
-                $this->equalTo([ 'some_value.yaml' ])
+                $this->equalTo(['foo/dev/bar']),
+                $this->equalTo(['some_value.yaml'])
             );
         $sut = new ConfigProvider(new ConfigProviderParams([
             'settings' => [
                 'loader' => ArrayConfigLoader::class,
                 'sources' => [
-                    'project' => [ 'environment' => 'dev' ],
+                    'project' => ['environment' => 'dev'],
                     'some_setting' => 'some_value'
                 ]
             ],
             'connections' => [
                 'loader' => $loaderMock,
-                'locations' => [ 'foo/${settings.project.environment}/bar' ],
-                'sources' => [ '${settings.some_setting}.yaml' ]
+                'locations' => ['foo/${settings.project.environment}/bar'],
+                'sources' => ['${settings.some_setting}.yaml']
             ]
         ]));
         $sut->get('connections');
@@ -144,7 +142,7 @@ final class ConfigProviderTest extends TestCase
         $sut = new ConfigProvider(new ConfigProviderParams([
             'settings' => [
                 'loader' => $this->createMock(ConfigLoaderInterface::class),
-                'sources' => [ 'foo/${settings.auth.name}/bar' ]
+                'sources' => ['foo/${settings.auth.name}/bar']
             ]
         ]));
         $sut->get('settings');
@@ -163,6 +161,6 @@ final class ConfigProviderTest extends TestCase
                 ]
             ])
         );
-        return [ [ $configProvider ] ];
+        return [[$configProvider ] ];
     }
 }

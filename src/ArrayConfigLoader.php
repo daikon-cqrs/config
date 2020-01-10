@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file is part of the daikon-cqrs/config project.
  *
@@ -6,11 +6,7 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Daikon\Config;
-
-use Symfony\Component\Yaml\Yaml;
 
 final class ArrayConfigLoader implements ConfigLoaderInterface
 {
