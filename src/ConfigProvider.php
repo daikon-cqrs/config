@@ -9,6 +9,7 @@
 namespace Daikon\Config;
 
 use Assert\Assertion;
+use Daikon\Interop\RuntimeException;
 
 final class ConfigProvider implements ConfigProviderInterface
 {
@@ -37,11 +38,13 @@ final class ConfigProvider implements ConfigProviderInterface
             'Recursive interpolations are not allowed when interpolating "locations" or "sources". '.
             sprintf('Trying to recurse into scope: "%s"', $scope)
         );
+
         if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
             $this->config[$scope] = $this->loadScope($scope);
         } elseif (!isset($this->config[$scope])) {
             return $default;
         }
+
         return $this->evaluatePath(
             $path->getParts(),
             $this->config[$path->getScope()],
@@ -59,7 +62,7 @@ final class ConfigProvider implements ConfigProviderInterface
     {
         $value = $this->get($path, $default);
         if (is_null($value) && is_null($default)) {
-            throw new \RuntimeException("Missing required config value at path/key: $path");
+            throw new RuntimeException("Missing required config value at path/key: $path");
         }
         return $value;
     }
@@ -94,7 +97,7 @@ final class ConfigProvider implements ConfigProviderInterface
             $part = array_shift($parts);
             Assertion::isArray(
                 $value,
-                sprintf('Trying to traverse non array-value with pathpart: "%s"', join($separator, $parts))
+                sprintf("Trying to traverse non array-value with pathpart: '%s'", join($separator, $parts))
             );
             if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
                 return $this->expandWildcard($parts, $value, $separator);
@@ -126,7 +129,7 @@ final class ConfigProvider implements ConfigProviderInterface
 
     private function interpolateConfigValues(array $config): array
     {
-        return array_map([$this, "mapInterpolation"], $config);
+        return array_map([$this, 'mapInterpolation'], $config);
     }
 
     /**
@@ -146,7 +149,7 @@ final class ConfigProvider implements ConfigProviderInterface
     /** @return mixed */
     private function interpolateConfigValue(string $value, array $valueParts, array $interpolations)
     {
-        $interpolatedValues = array_map([$this, "get"], $interpolations);
+        $interpolatedValues = array_map([$this, 'get'], $interpolations);
         return array_filter($interpolatedValues, 'is_string') === $interpolatedValues
             ? str_replace($valueParts, $interpolatedValues, $value)
             : $interpolatedValues[0];
