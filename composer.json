@@ -10,8 +10,8 @@
     "require": {
         "php": "^7.4",
         "daikon/interop": "master@dev",
-        "symfony/finder": "^4.0",
-        "symfony/yaml": "^4.0",
+        "symfony/finder": "^5.0",
+        "symfony/yaml": "^5.0",
         "beberlei/assert": "^3.0"
     },
     "require-dev": {
