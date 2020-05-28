@@ -113,9 +113,11 @@ final class ConfigProviderTest extends TestCase
     public function testLocationAndSourceInterpolation()
     {
         $loaderMock = $this->getMockBuilder(ConfigLoaderInterface::class)
-            ->setMethods(['load', 'serialize', 'deserialize'])->getMock();
+            ->onlyMethods(['load'])
+            ->getMock();
         $loaderMock->expects($this->once())
-            ->method('load')->with(
+            ->method('load')
+            ->with(
                 $this->equalTo(['foo/dev/bar']),
                 $this->equalTo(['some_value.yaml'])
             );
