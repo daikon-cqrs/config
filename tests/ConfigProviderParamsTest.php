@@ -24,7 +24,7 @@ final class ConfigProviderParamsTest extends TestCase
         ]
     ];
 
-    public function testHasScope()
+    public function testHasScope(): void
     {
         $provider = new ConfigProviderParams([
             'settings' => [
@@ -36,7 +36,7 @@ final class ConfigProviderParamsTest extends TestCase
         $this->assertFalse($provider->hasScope('foobar'));
     }
 
-    public function testGetLoader()
+    public function testGetLoader(): void
     {
         $provider = new ConfigProviderParams([
             'settings' => [
@@ -47,7 +47,7 @@ final class ConfigProviderParamsTest extends TestCase
         $this->assertInstanceOf(ArrayConfigLoader::class, $provider->getLoader('settings'));
     }
 
-    public function testGetSources()
+    public function testGetSources(): void
     {
         $provider = new ConfigProviderParams([
             'settings' => [
@@ -58,7 +58,7 @@ final class ConfigProviderParamsTest extends TestCase
         $this->assertEquals(self::SOURCES_FIXTURE, $provider->getSources('settings'));
     }
 
-    public function testGetLocations()
+    public function testGetLocations(): void
     {
         $provider = new ConfigProviderParams([
             'settings' => [
@@ -70,13 +70,13 @@ final class ConfigProviderParamsTest extends TestCase
         $this->assertEquals(self::LOCATIONS_FIXTURE, $provider->getLocations('settings'));
     }
 
-    public function testEmptyParams()
+    public function testEmptyParams(): void
     {
         $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([]);
     } // @codeCoverageIgnore
 
-    public function testMissingSources()
+    public function testMissingSources(): void
     {
         $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
@@ -87,7 +87,7 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    public function testInvalidSources()
+    public function testInvalidSources(): void
     {
         $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
@@ -98,7 +98,7 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    public function testInvalidLocations()
+    public function testInvalidLocations(): void
     {
         $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
@@ -110,7 +110,7 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    public function testMissingLoader()
+    public function testMissingLoader(): void
     {
         $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([
@@ -120,7 +120,7 @@ final class ConfigProviderParamsTest extends TestCase
         ]);
     } // @codeCoverageIgnore
 
-    public function testInvalidLoader()
+    public function testInvalidLoader(): void
     {
         $this->expectException(AssertionFailedException::class);
         new ConfigProviderParams([

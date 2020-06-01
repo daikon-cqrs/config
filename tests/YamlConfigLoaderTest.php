@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 final class YamlConfigLoaderTest extends TestCase
 {
-    public function testLoad()
+    public function testLoad(): void
     {
         $yamlLoader = new YamlConfigLoader;
         $locations = [__DIR__.'/Fixture/YamlConfigLoader'];
@@ -22,7 +22,7 @@ final class YamlConfigLoaderTest extends TestCase
         $this->assertEquals($expecation, $yamlLoader->load($locations, $sources));
     }
 
-    public function testCascadedLoad()
+    public function testCascadedLoad(): void
     {
         $yamlLoader = new YamlConfigLoader;
         $locations = [__DIR__.'/Fixture/YamlConfigLoader'];

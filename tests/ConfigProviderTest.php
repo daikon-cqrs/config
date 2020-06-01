@@ -38,7 +38,7 @@ final class ConfigProviderTest extends TestCase
      * @dataProvider provideSut
      * @param ConfigProviderInterface $sut
      */
-    public function testHas(ConfigProviderInterface $sut)
+    public function testHas(ConfigProviderInterface $sut): void
     {
         $this->assertTrue($sut->has('settings'));
         $this->assertTrue($sut->has('settings.project'));
@@ -54,7 +54,7 @@ final class ConfigProviderTest extends TestCase
      * @dataProvider provideSut
      * @param ConfigProviderInterface $sut
      */
-    public function testGet(ConfigProviderInterface $sut)
+    public function testGet(ConfigProviderInterface $sut): void
     {
         $this->assertEquals(self::CONFIG_FIXTURE, $sut->get('settings'));
         $this->assertEquals(
@@ -73,7 +73,7 @@ final class ConfigProviderTest extends TestCase
      * @dataProvider provideSut
      * @param ConfigProviderInterface $sut
      */
-    public function testGetWildcardExpansion(ConfigProviderInterface $sut)
+    public function testGetWildcardExpansion(ConfigProviderInterface $sut): void
     {
         $this->assertEquals(['hello', 'eris'], $sut->get('settings.labels.*.label.*.value'));
     }
@@ -82,14 +82,14 @@ final class ConfigProviderTest extends TestCase
      * @dataProvider provideSut
      * @param ConfigProviderInterface $sut
      */
-    public function testGetWithDefault(ConfigProviderInterface $sut)
+    public function testGetWithDefault(ConfigProviderInterface $sut): void
     {
         $this->assertEquals('development', $sut->get('settings.project.environment', 'bar'));
         $this->assertEquals('bar', $sut->get('foo', 'bar'));
         $this->assertNull($sut->get('foo'));
     }
 
-    public function testInterpolation()
+    public function testInterpolation(): void
     {
         $sut = new ConfigProvider(new ConfigProviderParams([
             'settings' => [
@@ -110,7 +110,7 @@ final class ConfigProviderTest extends TestCase
         $this->assertEquals('c4ntgu35th15', $sut->get('settings.auth.simple.password'));
     }
 
-    public function testLocationAndSourceInterpolation()
+    public function testLocationAndSourceInterpolation(): void
     {
         $loaderMock = $this->getMockBuilder(ConfigLoaderInterface::class)
             ->onlyMethods(['load'])
@@ -138,7 +138,7 @@ final class ConfigProviderTest extends TestCase
         $sut->get('connections');
     }
 
-    public function testInvalidSourceInterpolation()
+    public function testInvalidSourceInterpolation(): void
     {
         $this->expectException(AssertionFailedException::class);
         $sut = new ConfigProvider(new ConfigProviderParams([
@@ -153,7 +153,7 @@ final class ConfigProviderTest extends TestCase
     /**
      * @codeCoverageIgnore
      */
-    public function provideSut()
+    public function provideSut(): array
     {
         $configProvider = new ConfigProvider(
             new ConfigProviderParams([
@@ -163,6 +163,6 @@ final class ConfigProviderTest extends TestCase
                 ]
             ])
         );
-        return [[$configProvider ] ];
+        return [[$configProvider]];
     }
 }

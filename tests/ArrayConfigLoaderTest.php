@@ -23,7 +23,7 @@ final class ArrayConfigLoaderTest extends TestCase
         ]
     ];
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $arrayLoader = new ArrayConfigLoader;
         $this->assertEquals(self::ARRAY_FIXTURE, $arrayLoader->load([], self::ARRAY_FIXTURE));

@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigPathTest extends TestCase
 {
-    public function testGetScope()
+    public function testGetScope(): void
     {
         $configPath = ConfigPath::fromString('settings.core.app_version');
         $this->assertEquals('settings', $configPath->getScope());
@@ -22,7 +22,7 @@ final class ConfigPathTest extends TestCase
         $this->assertEquals('settings', $configPath->getScope());
     }
 
-    public function testGetParts()
+    public function testGetParts(): void
     {
         $configPath = ConfigPath::fromString('settings.core.app_version');
         $this->assertEquals([ 'core', 'app_version' ], $configPath->getParts());
@@ -30,13 +30,13 @@ final class ConfigPathTest extends TestCase
         $this->assertEquals([], $configPath->getParts());
     }
 
-    public function testGetLength()
+    public function testGetLength(): void
     {
         $configPath = ConfigPath::fromString('settings.core.app_version');
         $this->assertEquals(2, $configPath->getLength());
     }
 
-    public function testHasParts()
+    public function testHasParts(): void
     {
         $configPath = ConfigPath::fromString('settings.core.app_version');
         $this->assertTrue($configPath->hasParts());
@@ -44,19 +44,19 @@ final class ConfigPathTest extends TestCase
         $this->assertFalse($configPath->hasParts());
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $configPath = ConfigPath::fromString('settings.core.app_version');
         $this->assertEquals('settings.core.app_version', (string)$configPath);
     }
 
-    public function testWithEmptyPath()
+    public function testWithEmptyPath(): void
     {
         $this->expectException(AssertionFailedException::class);
         ConfigPath::fromString('');
     } // @codeCoverageIgnore
 
-    public function testInvalidPathWithLeadingSeparator()
+    public function testInvalidPathWithLeadingSeparator(): void
     {
         $this->expectException(AssertionFailedException::class);
         ConfigPath::fromString('.settings.core.app_version');
