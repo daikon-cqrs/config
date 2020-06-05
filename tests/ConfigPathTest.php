@@ -54,11 +54,11 @@ final class ConfigPathTest extends TestCase
     {
         $this->expectException(AssertionFailedException::class);
         ConfigPath::fromString('');
-    } // @codeCoverageIgnore
+    }
 
     public function testInvalidPathWithLeadingSeparator(): void
     {
         $this->expectException(AssertionFailedException::class);
         ConfigPath::fromString('.settings.core.app_version');
-    } // @codeCoverageIgnore
+    }
 }
