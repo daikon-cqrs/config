@@ -8,12 +8,12 @@
 
 namespace Daikon\Test\Config;
 
-use Assert\AssertionFailedException;
 use Daikon\Config\ArrayConfigLoader;
 use Daikon\Config\ConfigLoaderInterface;
 use Daikon\Config\ConfigProvider;
 use Daikon\Config\ConfigProviderInterface;
 use Daikon\Config\ConfigProviderParams;
+use Daikon\Interop\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase

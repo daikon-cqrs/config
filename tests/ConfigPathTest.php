@@ -8,8 +8,8 @@
 
 namespace Daikon\Test\Config;
 
-use Assert\AssertionFailedException;
 use Daikon\Config\ConfigPath;
+use Daikon\Interop\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigPathTest extends TestCase
@@ -25,7 +25,7 @@ final class ConfigPathTest extends TestCase
     public function testGetParts(): void
     {
         $configPath = ConfigPath::fromString('settings.core.app_version');
-        $this->assertEquals([ 'core', 'app_version' ], $configPath->getParts());
+        $this->assertEquals(['core', 'app_version'], $configPath->getParts());
         $configPath = ConfigPath::fromString('settings');
         $this->assertEquals([], $configPath->getParts());
     }

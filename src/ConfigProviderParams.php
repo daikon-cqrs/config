@@ -8,7 +8,8 @@
 
 namespace Daikon\Config;
 
-use Assert\Assertion;
+use Daikon\Interop\Assert;
+use Daikon\Interop\Assertion;
 
 final class ConfigProviderParams implements ConfigProviderParamsInterface
 {
@@ -61,51 +62,39 @@ final class ConfigProviderParams implements ConfigProviderParamsInterface
         return $params;
     }
 
-    private function checkLocations(string $scope, array $scopeParams): void
+    private function checkLocations(string $scope, array $params): void
     {
-        Assertion::isArray(
-            $scopeParams['locations'],
-            sprintf('The "locations" param within scope: "%s" must be an array', $scope)
-        );
+        Assertion::isArray($params['locations'], "The 'locations' param within scope '$scope' must be an array.");
     }
 
     private function checkSources(string $scope, array $params): void
     {
-        Assertion::keyIsset($params, 'sources', sprintf('Missing required key "sources" within scope: "%s"', $scope));
-        Assertion::isArray(
-            $params['sources'],
-            sprintf('The "sources" param within scope: "%s" must be an array', $scope)
-        );
+        Assertion::keyIsset($params, 'sources', "Missing required key 'sources' within scope '$scope'.");
+        Assertion::isArray($params['sources'], "The 'sources' param within scope '$scope' must be an array.");
     }
 
     private function checkLoader(string $scope, array $params): void
     {
-        Assertion::keyIsset($params, 'loader', sprintf('Missing required key "loader" within scope: "%s"', $scope));
+        Assertion::keyIsset($params, 'loader', "Missing required key 'loader' within scope '$scope'.");
         if ($params['loader'] instanceof ConfigLoaderInterface) {
             return;
         }
-        Assertion::string(
-            $params['loader'],
-            sprintf('The "loader" param within scope: "%s" must be a string(fqcn)', $scope)
-        );
-        Assertion::classExists(
-            $params['loader'],
-            sprintf('Configured loader: "%s" for scope: "%s" can not be found.', $params['loader'], $scope)
-        );
-        Assertion::implementsInterface(
-            $params['loader'],
-            ConfigLoaderInterface::class,
-            sprintf(
-                'Configured loader: "%s" for scope: "%s" does not implement required interface: %s',
-                $params['loader'],
-                $scope,
-                ConfigLoaderInterface::class
-            )
-        );
+        Assert::that($params['loader'])
+            ->string("The 'loader' param within scope '$scope' must be a fqcn string.")
+            ->classExists("Configured loader '{$params['loader']}' for scope '$scope' cannot be found.")
+            ->implementsInterface(
+                ConfigLoaderInterface::class,
+                sprintf(
+                    "Configured loader '%s' for scope '%s' does not implement required interface '%s'.",
+                    $params['loader'],
+                    $scope,
+                    ConfigLoaderInterface::class
+                )
+            );
     }
 
     private function assertScopeExists(string $scope): void
     {
-        Assertion::true($this->hasScope($scope), sprintf('Given scope: "%s" has not been registered.', $scope));
+        Assertion::true($this->hasScope($scope), "Given scope '$scope' has not been registered.");
     }
 }

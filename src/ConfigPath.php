@@ -8,7 +8,8 @@
 
 namespace Daikon\Config;
 
-use Assert\Assertion;
+use Daikon\Interop\Assert;
+use Daikon\Interop\Assertion;
 
 final class ConfigPath implements ConfigPathInterface
 {
@@ -24,12 +25,12 @@ final class ConfigPath implements ConfigPathInterface
     {
         $path = trim($path);
         $separator = trim($separator);
-        Assertion::length($separator, 1, 'Path separator must be exactly one char long.');
-        Assertion::notSame(
-            0,
-            strpos($path, $separator),
-            'Initializing malformed ConfigPath: Path may not start with: '.$separator
-        );
+        Assert::that($separator)
+            ->length(1, 'Path separator must be exactly one char long.')
+            ->satisfy(
+                fn(): bool => strpos($path, $separator) !== 0,
+                "Initializing malformed ConfigPath. Path may not start with '$separator'"
+            );
         $pathParts = explode($separator, $path);
         return new static(array_shift($pathParts), $pathParts, $separator);
     }

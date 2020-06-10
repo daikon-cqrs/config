@@ -8,8 +8,7 @@
 
 namespace Daikon\Config;
 
-use Assert\Assertion;
-use Daikon\Interop\RuntimeException;
+use Daikon\Interop\Assertion;
 
 final class ConfigProvider implements ConfigProviderInterface
 {
@@ -35,8 +34,8 @@ final class ConfigProvider implements ConfigProviderInterface
         Assertion::keyNotExists(
             $this->paramInterpolations,
             $scope,
-            'Recursive interpolations are not allowed when interpolating "locations" or "sources". '.
-            sprintf('Trying to recurse into scope: "%s"', $scope)
+            "Recursive interpolations are not allowed when interpolating 'locations' or 'sources'. ".
+            "Trying to recurse into scope '$scope'"
         );
 
         if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
@@ -61,9 +60,7 @@ final class ConfigProvider implements ConfigProviderInterface
     public function __invoke(string $path, $default = null)
     {
         $value = $this->get($path, $default);
-        if (is_null($value) && is_null($default)) {
-            throw new RuntimeException("Missing required config value at path/key: $path");
-        }
+        Assertion::allNotNull([$value, $default], "Missing required config value at path '$path'");
         return $value;
     }
 
@@ -97,7 +94,7 @@ final class ConfigProvider implements ConfigProviderInterface
             $part = array_shift($parts);
             Assertion::isArray(
                 $value,
-                sprintf("Trying to traverse non array-value with pathpart: '%s'", join($separator, $parts))
+                sprintf("Trying to traverse non-array value with path part '%s'", join($separator, $parts))
             );
             if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
                 return $this->expandWildcard($parts, $value, $separator);
