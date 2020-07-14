@@ -35,7 +35,7 @@ final class ConfigProvider implements ConfigProviderInterface
             $this->paramInterpolations,
             $scope,
             "Recursive interpolations are not allowed when interpolating 'locations' or 'sources'. ".
-            "Trying to recurse into scope '$scope'"
+            "Trying to recurse into scope '$scope'."
         );
 
         if (!isset($this->config[$scope]) && $this->params->hasScope($scope)) {
@@ -60,7 +60,7 @@ final class ConfigProvider implements ConfigProviderInterface
     public function __invoke(string $path, $default = null)
     {
         $value = $this->get($path, $default);
-        Assertion::allNotNull([$value, $default], "Missing required config value at path '$path'");
+        Assertion::allNotNull([$value, $default], "Missing required config value at path '$path'.");
         return $value;
     }
 
@@ -94,7 +94,7 @@ final class ConfigProvider implements ConfigProviderInterface
             $part = array_shift($parts);
             Assertion::isArray(
                 $value,
-                sprintf("Trying to traverse non-array value with path part '%s'", join($separator, $parts))
+                sprintf("Trying to traverse non-array value with path part '%s'.", join($separator, $parts))
             );
             if ($part === ConfigPathInterface::WILDCARD_TOKEN) {
                 return $this->expandWildcard($parts, $value, $separator);
