@@ -1,14 +1,15 @@
 # Config
 
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/daikon/config)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/daikon-cqrs/config)
-![Packagist License](https://img.shields.io/packagist/l/daikon/config)
+![PHP Version Support](https://badgen.net/packagist/php/daikon/config?color=blue)
+[![Lines of Code](https://badgen.net/codeclimate/loc/daikon-cqrs/config)](https://codeclimate.com/github/daikon-cqrs/config/code?sort=-loc)
+[![Packagist](https://badgen.net/packagist/name/daikon/config?color=blue)](https://packagist.org/packages/daikon/config)
+[![License](https://badgen.net/github/license/daikon-cqrs/config)](https://github.com/daikon-cqrs/config/blob/master/LICENSE)
 
-[![Build Status](https://travis-ci.com/daikon-cqrs/config.svg?branch=master)](https://travis-ci.com/daikon-cqrs/config)
-[![Code Coverage](https://img.shields.io/codecov/c/github/daikon-cqrs/config)](https://codecov.io/gh/daikon-cqrs/config)
+[![Build Status](https://badgen.net/travis/daikon-cqrs/config?label=build)](https://travis-ci.com/daikon-cqrs/config)
+[![Code Coverage](https://badgen.net/codecov/c/github/daikon-cqrs/config)](https://codecov.io/gh/daikon-cqrs/config)
 [![Type Coverage](https://shepherd.dev/github/daikon-cqrs/config/coverage.svg)](https://shepherd.dev/github/daikon-cqrs/config)
-[![Libraries.io dependency status](https://img.shields.io/librariesio/github/daikon-cqrs/config)](https://libraries.io/github/daikon-cqrs/config)
-[![Scrutinizer code quality](https://img.shields.io/scrutinizer/quality/g/daikon-cqrs/config/master)](https://scrutinizer-ci.com/g/daikon-cqrs/config/?branch=master)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/daikon-cqrs/config)](https://codeclimate.com/github/daikon-cqrs/config/maintainability)
+[![Code Quality](https://img.shields.io/scrutinizer/quality/g/daikon-cqrs/config/master)](https://scrutinizer-ci.com/g/daikon-cqrs/config/?branch=master)
+[![Code Maintainability](https://badgen.net/codeclimate/maintainability/daikon-cqrs/config)](https://codeclimate.com/github/daikon-cqrs/config)
+[![Dependabot](https://badgen.net/github/dependabot/daikon-cqrs/config)](https://github.com/daikon-cqrs/config/network/updates)
 
 Interpolating configuration loader and provider.
